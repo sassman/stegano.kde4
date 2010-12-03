@@ -106,6 +106,5 @@ void SteganoDialog::slotButtonClicked() {
                               i18n("You pressed the button!" ),
                               i18n( "Hooray!" ) );
 }
-
-#include "../build/src/steganodialog.moc"
 */
+#include "../build/src/steganodialog.moc"
