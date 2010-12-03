@@ -21,6 +21,9 @@
      </item>
      <item>
       <widget class="QGroupBox" name="groupBox">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="title">
         <string>Verschlüsselung</string>
        </property>
@@ -110,14 +113,17 @@
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout">
                <item>
-                <widget class="KPushButton" name="bUnhide">
+                <widget class="KPushButton" name="buttonUnhide">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
                  <property name="text">
                   <string>Sichtbar machen</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="KPushButton" name="kpushbutton">
+                <widget class="KPushButton" name="buttonSave">
                  <property name="text">
                   <string>Speichern</string>
                  </property>
@@ -179,6 +185,9 @@
                </item>
                <item>
                 <widget class="KTabWidget" name="ktabwidget">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="currentIndex">
                   <number>0</number>
                  </property>
@@ -193,6 +202,9 @@
                   </layout>
                  </widget>
                  <widget class="QWidget" name="tabAttachment">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
                   <attribute name="title">
                    <string>Dokumente</string>
                   </attribute>
@@ -209,14 +221,17 @@
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_3">
                <item>
-                <widget class="KPushButton" name="kpushbutton_3">
+                <widget class="KPushButton" name="buttonAttach">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
                  <property name="text">
                   <string>Anhänge hinzufügen</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="KPushButton" name="bHide">
+                <widget class="KPushButton" name="buttonHide">
                  <property name="text">
                   <string>Verbergen</string>
                  </property>
@@ -291,9 +306,9 @@
   <tabstop>tPassword</tabstop>
   <tabstop>cUseEncryption</tabstop>
   <tabstop>tMessageText</tabstop>
-  <tabstop>bHide</tabstop>
-  <tabstop>kpushbutton</tabstop>
-  <tabstop>kpushbutton_3</tabstop>
+  <tabstop>buttonHide</tabstop>
+  <tabstop>buttonSave</tabstop>
+  <tabstop>buttonAttach</tabstop>
   <tabstop>ktabwidget</tabstop>
   <tabstop>tHash</tabstop>
  </tabstops>

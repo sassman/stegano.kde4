@@ -8,21 +8,21 @@
 #include "bititerator.h"
 
 BitIterator::BitIterator(const QByteArray& buf) {
-	this->data = buf;
+	this->buf = buf;
 }
 
 BitIterator::~BitIterator() {
 }
 
-QByteArray BitIterator::getData(){
-	return this->data;
+QByteArray BitIterator::data(){
+	return this->buf;
 }
 
-bool BitIterator::getBit(int i){
-    char curr = data.size() > i / 8 ? data[(i / 8)] : (char)0x00;
+bool BitIterator::bit(int i){
+    char curr = buf.size() > i / 8 ? buf[(i / 8)] : (char)0x00;
     return (bool)(curr >> (i % 8) & 0x01);
 }
 
 bool BitIterator::operator[](int i){
-	return this->getBit(i);
+	return this->bit(i);
 }

@@ -8,7 +8,7 @@ include (KDE4Defaults)
 
 set(stegano.kde_SRCS
 	main.cpp
-	stegano.cpp
+	steganocore.cpp
 	steganodialog.cpp
 	bititerator.cpp
 )

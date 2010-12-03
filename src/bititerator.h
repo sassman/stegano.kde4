@@ -19,12 +19,12 @@ class BitIterator : public QObject
 	BitIterator(const QByteArray& );
 	virtual ~BitIterator();
 
-	QByteArray 	getData();
-	bool 		getBit(int 	i);
+	QByteArray 	data();
+	bool 		bit(int 	i);
 	bool 		operator[](int 	i);
 
 private:
-	QByteArray data;
+	QByteArray buf;
 };
 
 #endif /* BITITERATOR_H_ */
