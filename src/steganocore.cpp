@@ -51,7 +51,7 @@ void SteganoCore::setSourceMedia(QString source){
 void SteganoCore::hideData(const QByteArray& source, QProgressDialog* monitor){
 	QByteArray chiffre = QByteArray(source);
 	// terminator setzen.
-// 	chiffre.append(0xff);
+ 	chiffre.append(0xe3);
 // 	if (this->useCrypt) {
 // 		chiffre = encryptData(chiffre);
 // 	}
@@ -101,9 +101,9 @@ QByteArray SteganoCore::unhideData(QProgressDialog* monitor) {
 					return QByteArray();
 			}
 			QColor pixelColor = QColor(media->pixel(x, y));
-			bi.setBit(i++, pixelColor.red());
-			bi.setBit(i++, pixelColor.green());
 			bi.setBit(i++, pixelColor.blue());
+			bi.setBit(i++, pixelColor.green());
+			bi.setBit(i++, pixelColor.red());
 		}
 	}
 
@@ -114,7 +114,7 @@ QByteArray SteganoCore::unhideData(QProgressDialog* monitor) {
 
 	QByteArray buffer = bi.data();
 	// terminator entfernen
-	//buffer.resize(buffer.length() - 1);
+	buffer.resize(buffer.length() - 1);
 	return buffer;
 }
 
