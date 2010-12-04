@@ -51,10 +51,10 @@ void SteganoCore::setSourceMedia(QString source){
 void SteganoCore::hideData(const QByteArray& source, QProgressDialog* monitor){
 	QByteArray chiffre = QByteArray(source);
 	// terminator setzen.
-	chiffre.append(0xff);
-	if (this->useCrypt) {
-		chiffre = encryptData(chiffre);
-	}
+// 	chiffre.append(0xff);
+// 	if (this->useCrypt) {
+// 		chiffre = encryptData(chiffre);
+// 	}
 
 	this->media = new QImage(this->sourceMediaFile);
 	BitIterator bi(chiffre);
@@ -72,18 +72,50 @@ void SteganoCore::hideData(const QByteArray& source, QProgressDialog* monitor){
 				if (monitor->wasCanceled())
 					return;
 			}
-			QRgb pixelColor = media->pixel(x, y);
-			QRgb nColor = 	((pixelColor & 0xFF0000) | bi.bit(i++)) |
-							((pixelColor & 0x00FF00) | bi.bit(i++)) |
-							((pixelColor & 0x0000FF) | bi.bit(i++));
-			media->setPixel(x, y, nColor);
-		/*
-			Color nColor = Color.FromArgb((int)((pixelColor.R & 0xFE) | bi.GetBit(i++)),
-										  (int)((pixelColor.G & 0xFE) | bi.GetBit(i++)),
-										  (int)((pixelColor.B & 0xFE) | bi.GetBit(i++)));
-		*/
+			QColor pixelColor = QColor(media->pixel(x, y));
+			QColor nColor = QColor::fromRgb(
+				(int)((pixelColor.red() 	& 0xFE) | bi.bit(i++)),
+				(int)((pixelColor.green() 	& 0xFE) | bi.bit(i++)),
+				(int)((pixelColor.blue()	& 0xFE) | bi.bit(i++))
+			);
+			media->setPixel(x, y, nColor.rgb());
 		}
 	}
+}
+
+QByteArray SteganoCore::unhideData(QProgressDialog* monitor) {
+	this->media = new QImage(this->sourceMediaFile);
+	BitIterator bi;
+	
+	int lastProg = 0, currProg = -1, i = 0, colorChannels = 3; //media->colorCount();
+	float progGes = media->width() * media->height() * colorChannels;
+	
+	monitor->setValue(lastProg);
+	for (int x = 0; x < media->width(); x++) {
+		for (int y = 0; y < media->height(); ++y) {
+			currProg = (int)((x * y * colorChannels * 100) / progGes);
+			if(currProg > lastProg) {
+				monitor->setValue(lastProg = currProg );
+				
+				if (monitor->wasCanceled())
+					return QByteArray();
+			}
+			QColor pixelColor = QColor(media->pixel(x, y));
+			bi.setBit(i++, pixelColor.red());
+			bi.setBit(i++, pixelColor.green());
+			bi.setBit(i++, pixelColor.blue());
+		}
+	}
+
+// 	if (this->useCrypt)
+// 	{
+// 		bi = BitIterator(decryptData(bi.data(), key));
+// 	}
+
+	QByteArray buffer = bi.data();
+	// terminator entfernen
+	//buffer.resize(buffer.length() - 1);
+	return buffer;
 }
 
 QByteArray SteganoCore::encryptData(const QByteArray& buf){

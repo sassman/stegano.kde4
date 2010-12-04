@@ -31,7 +31,7 @@ SteganoDialog::SteganoDialog( QWidget *parent ) : KDialog( parent ) {
 	connect( this->cFile, SIGNAL( textChanged(QString) ), &stegano, SLOT( setSourceMedia(QString) ) );
 	connect( this->buttonHide, SIGNAL( clicked() ), this, SLOT( hideData() ) );
 
-	connect( this->buttonUnhide, SIGNAL( clicked() ), this, SLOT( testingAnimations() ) );
+	connect( this->buttonUnhide, SIGNAL( clicked() ), this, SLOT( unhideData() ) );
 
 	connect( this->buttonSave, SIGNAL( clicked() ), this, SLOT( saveMedia() ) );
 	
@@ -58,6 +58,24 @@ void SteganoDialog::hideData() {
 	stegano.setSourceMedia(this->cFile->text());
 	stegano.hideData(this->tMessageText->toPlainText().toUtf8(), &progress);
 }
+
+void SteganoDialog::unhideData() {
+
+	if(this->cFile->text().isEmpty()) {
+		this->cFile->setFocus();
+		QMessageBox::information(this, "No Media given!", "Please give some Media to hide into..");
+		return;
+	}
+
+	QProgressDialog progress("Unhide Data...", "Cancel", 0, 100, this);
+	progress.setWindowModality(Qt::WindowModal);
+	progress.show();
+
+	stegano.setSourceMedia(this->cFile->text());
+	QByteArray data = stegano.unhideData(&progress);
+	this->tMessageText->setPlainText(QString::fromUtf8(data.data()));
+}
+
 
 void SteganoDialog::saveMedia() {
 	if(!stegano.sourceMedia()) {

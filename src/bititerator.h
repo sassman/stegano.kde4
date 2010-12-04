@@ -20,8 +20,9 @@ class BitIterator : public QObject
 	virtual ~BitIterator();
 
 	QByteArray 	data();
-	bool 		bit(int 	i);
-	bool 		operator[](int 	i);
+	uint 		bit(int 	i);
+	uint 		operator[](int i);
+	void 		setBit(int i, uint b);
 
 private:
 	QByteArray buf;

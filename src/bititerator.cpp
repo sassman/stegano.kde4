@@ -18,11 +18,35 @@ QByteArray BitIterator::data(){
 	return this->buf;
 }
 
-bool BitIterator::bit(int i){
-    char curr = buf.size() > i / 8 ? buf[(i / 8)] : (char)0x00;
-    return (bool)(curr >> (i % 8) & 0x01);
+uint BitIterator::bit(int i){
+    uchar curr = buf.size() > i / 8 ? buf[(i / 8)] : (char)0x00;
+    return (uint)(curr >> (i % 8) & 0x01);
 }
 
-bool BitIterator::operator[](int i){
+void BitIterator::setBit(int i, uint b){
+	if (i / 8 > buf.length())
+		buf.resize(buf.length() + 1);
+	
+	//int round = i / 8;
+	//byte current;
+
+	//current = data[round];
+
+	//int shifter = (i - (round * 8));
+	//byte nb = (byte)(b & 0x01);
+	//byte lastBit = (byte)(b & 0x01);
+	//current = (byte)((current << 1) | (b & 0x01));
+	//if (round < data.Length)
+	//    data[round] = current;
+
+	/* ~ -> NOT Operator to clear the i. postition in byte an than overwrite it
+		* by the bit out from the source
+		*/
+	uchar curr = buf[i / 8];
+	buf[i / 8] = (uchar)((curr & ~((b & 0x01) << i % 8)) | ((b & 0x01) << i % 8));
+}
+
+
+uint BitIterator::operator[](int i){
 	return this->bit(i);
 }

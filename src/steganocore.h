@@ -3,6 +3,7 @@
  
 #include <QtCrypto/QtCrypto>
 #include <QProgressDialog>
+#include <QByteArray>
 #include <KUrl>
 
 #include "bititerator.h"
@@ -28,6 +29,8 @@ class SteganoCore : public QObject {
 
 	public:
 		QImage*		sourceMedia() { return media; }
+
+		QByteArray 	unhideData(QProgressDialog* monitor);
 		
 	private:
 		QImage*		media;

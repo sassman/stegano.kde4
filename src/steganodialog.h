@@ -20,6 +20,7 @@ class SteganoDialog : public KDialog, Ui::Stegano {
 
 	private slots:
 		void hideData();
+		void unhideData();
 		void testingAnimations();
 		void saveMedia();
 
