@@ -14,47 +14,46 @@ SteganoCore::~SteganoCore(){
 }
 
 void SteganoCore::setPassword(const QString& passw){
-  this->newPassword(passw);
+	this->newPassword(passw);
 }
 
 void SteganoCore::newPassword(const QString& passw){
-  QCA::Initializer init;
-  char algoStr[] = "md5";
+	QCA::Initializer init;
+	char algoStr[] = "md5";
 
-  if(!QCA::isSupported(algoStr)){
-        qDebug("Algorithmn not supported!");
-	return;
-  }
-  QString hash = "";
-  if(passw.length() > 0){
-    hash = QCA::Hash(algoStr).hashToString(passw.toUtf8());
-    this->setUseCrypt(true);
-  }
-  else{
-    setUseCrypt(false);
-  }
-    
-  this->keyString = hash;
-  emit keyChanged( this->keyString );
+	if(!QCA::isSupported(algoStr)){
+		qDebug("Algorithmn not supported!");
+		return;
+	}
+	QString hash = "";
+	if(passw.length() > 0){
+		hash = QCA::Hash(algoStr).hashToString(passw.toUtf8());
+		this->setUseCrypt(true);
+	}
+	else{
+		setUseCrypt(false);
+	}
+
+	this->keyString = hash;
+	emit keyChanged( this->keyString );
 }
 
 void SteganoCore::setUseCrypt(bool use){
-  this->useCrypt = use;
-  emit useCryptChanged(this->useCrypt);
+	this->useCrypt = use;
+	emit useCryptChanged(this->useCrypt);
 }
 
 void SteganoCore::setSourceMedia(QString source){
-  this->sourceMediaFile = source;
-  emit sourceMediaChanged(KUrl(this->sourceMediaFile));
+	this->sourceMediaFile = source;
+	emit sourceMediaChanged(KUrl(this->sourceMediaFile));
 }
 
 void SteganoCore::hideData(const QByteArray& source, QProgressDialog* monitor){
 	QByteArray chiffre = QByteArray(source);
-	// terminator setzen.
- 	chiffre.append(0xe3);
-// 	if (this->useCrypt) {
-// 		chiffre = encryptData(chiffre);
-// 	}
+
+	if (this->useCrypt) {
+		chiffre = encryptData(chiffre);
+	}
 
 	this->media = new QImage(this->sourceMediaFile);
 	BitIterator bi(chiffre);
@@ -107,17 +106,61 @@ QByteArray SteganoCore::unhideData(QProgressDialog* monitor) {
 		}
 	}
 
-// 	if (this->useCrypt)
-// 	{
-// 		bi = BitIterator(decryptData(bi.data(), key));
-// 	}
+	QByteArray message = bi.data();
+	while(message[message.length()-1] == '\0')
+		message.resize(message.length()-1);
 
-	QByteArray buffer = bi.data();
-	// terminator entfernen
-	buffer.resize(buffer.length() - 1);
-	return buffer;
+ 	if (this->useCrypt) {
+		message = this->decryptData(message);
+ 	}
+	return message;
 }
 
 QByteArray SteganoCore::encryptData(const QByteArray& buf){
-	return buf;
+	QCA::Initializer init;
+	QString algo("aes128");
+	
+	if(!QCA::isSupported("aes128-cbc-pkcs7")){
+		qDebug("SteganoCore::encryptData: aes128-cbc-pkcs7 not supported!");
+		return buf;
+	}
+
+	QCA::SymmetricKey key(this->keyString.toUtf8());
+	QCA::InitializationVector iv(16);
+	iv.fill('e');
+	QCA::Cipher cipher(
+		algo,
+		QCA::Cipher::CBC,
+		QCA::Cipher::DefaultPadding,
+		QCA::Encode,
+		key, iv
+	);
+
+	QCA::SecureArray secretText = cipher.process(buf);
+	return secretText.toByteArray();
 }
+
+QByteArray SteganoCore::decryptData(const QByteArray& buf){
+	QCA::Initializer init;
+	QString algo("aes128");
+	
+	if(!QCA::isSupported("aes128-cbc-pkcs7")){
+		qDebug("SteganoCore::decryptData: aes128-cbc-pkcs7 not supported!");
+		return buf;
+	}
+	
+	QCA::SymmetricKey key(this->keyString.toUtf8());
+	QCA::InitializationVector iv(16);
+	iv.fill('e');
+	QCA::Cipher cipher(
+		algo,
+		QCA::Cipher::CBC,
+		QCA::Cipher::DefaultPadding,
+		QCA::Decode,
+		key, iv
+	);
+	
+	QCA::SecureArray clearText = cipher.process(buf);
+	return clearText.toByteArray();
+}
+

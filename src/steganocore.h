@@ -39,6 +39,7 @@ class SteganoCore : public QObject {
 		QString		sourceMediaFile;
 
 		QByteArray 	encryptData(const QByteArray& 	buf);
+		QByteArray 	decryptData(const QByteArray& 	buf);
 		void 		newPassword(const QString& 	passw);
 };
  

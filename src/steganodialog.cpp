@@ -56,7 +56,9 @@ void SteganoDialog::hideData() {
 	progress.show();
 
 	stegano.setSourceMedia(this->cFile->text());
-	stegano.hideData(this->tMessageText->toPlainText().toUtf8(), &progress);
+	QByteArray data = this->tMessageText->toPlainText().toUtf8().toBase64();
+	qDebug(qPrintable(QCA::arrayToHex(data)));
+	stegano.hideData(data, &progress);
 }
 
 void SteganoDialog::unhideData() {
@@ -72,8 +74,9 @@ void SteganoDialog::unhideData() {
 	progress.show();
 
 	stegano.setSourceMedia(this->cFile->text());
-	QByteArray data = stegano.unhideData(&progress);
-	this->tMessageText->setPlainText(QString::fromUtf8(data.data()));
+	QByteArray data = QByteArray::fromBase64(stegano.unhideData(&progress));
+	qDebug(qPrintable(QCA::arrayToHex(data)));
+	this->tMessageText->setPlainText(QString::fromUtf8(data));
 }
 
 
@@ -83,8 +86,8 @@ void SteganoDialog::saveMedia() {
 		return;
 	}
 
-// 	QString filename = QFileDialog::getSaveFileName(this, "Save Media", "/home/sassman/", "Stegano Media (*.png)");
-	QString filename = cFile->text();
+	QString filename = QFileDialog::getSaveFileName(this, "Save Media", cFile->text(), "Stegano Media (*.png)");
+	//QString filename = cFile->text();
 	if(!filename.isEmpty()) {
 		stegano.sourceMedia()->save(filename);
 		QMessageBox::information(this, "Media Saved", "The Stegano Media was saved to file!");
