@@ -50,6 +50,8 @@ void SteganoCore::setSourceMedia(QString source){
 
 void SteganoCore::hideData(const QByteArray& source, QProgressDialog* monitor){
 	QByteArray chiffre = QByteArray(source);
+	chiffre.prepend((char) 0x02);
+	chiffre.append((char) 0xff);
 
 	if (this->useCrypt) {
 		chiffre = encryptData(chiffre);
@@ -100,19 +102,24 @@ QByteArray SteganoCore::unhideData(QProgressDialog* monitor) {
 					return QByteArray();
 			}
 			QColor pixelColor = QColor(media->pixel(x, y));
-			bi.setBit(i++, pixelColor.blue());
-			bi.setBit(i++, pixelColor.green());
 			bi.setBit(i++, pixelColor.red());
+			bi.setBit(i++, pixelColor.green());
+			bi.setBit(i++, pixelColor.blue());
 		}
 	}
 
 	QByteArray message = bi.data();
-	while(message[message.length()-1] == '\0')
-		message.resize(message.length()-1);
-
- 	if (this->useCrypt) {
+	if (this->useCrypt) {
 		message = this->decryptData(message);
- 	}
+	}
+	if( message[0] == (char)0x01
+	 && message[message.length() -1] == (char)0xff
+	) {
+		// the version 1 encoded image
+		message.resize(message.length()-1);
+	}
+	if(message.length() > 1)
+		message = message.mid(1, message.length()-2);
 	return message;
 }
 

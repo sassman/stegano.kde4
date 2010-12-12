@@ -56,7 +56,7 @@ void SteganoDialog::hideData() {
 	progress.show();
 
 	stegano.setSourceMedia(this->cFile->text());
-	QByteArray data = this->tMessageText->toPlainText().toUtf8().toBase64();
+	QByteArray data = this->tMessageText->toPlainText().toUtf8();
 	qDebug(qPrintable(QCA::arrayToHex(data)));
 	stegano.hideData(data, &progress);
 }
@@ -74,8 +74,7 @@ void SteganoDialog::unhideData() {
 	progress.show();
 
 	stegano.setSourceMedia(this->cFile->text());
-	QByteArray data = QByteArray::fromBase64(stegano.unhideData(&progress));
-	qDebug(qPrintable(QCA::arrayToHex(data)));
+	QByteArray data = stegano.unhideData(&progress);
 	this->tMessageText->setPlainText(QString::fromUtf8(data));
 }
 

@@ -11,6 +11,7 @@ set(stegano.kde_SRCS
 	steganocore.cpp
 	steganodialog.cpp
 	bititerator.cpp
+	messagecontainer.cpp
 )
 
 kde4_add_ui_files(stegano.kde_SRCS stegano.ui)
