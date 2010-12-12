@@ -15,6 +15,7 @@ BitIterator::~BitIterator() {
 }
 
 QByteArray BitIterator::data(){
+	this->buf.resize(qstrlen(this->buf));
 	return this->buf;
 }
 
