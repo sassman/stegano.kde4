@@ -20,7 +20,7 @@
       <widget class="KUrlComboRequester" name="cFile"/>
      </item>
      <item>
-      <widget class="QGroupBox" name="groupBox">
+      <widget class="QGroupBox" name="groupEncryption">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -253,25 +253,10 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>KUrlRequester</class>
-   <extends>QFrame</extends>
+   <class>KUrlComboRequester</class>
+   <extends>KUrlRequester</extends>
    <header>kurlrequester.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>KListWidget</class>
-   <extends>QListWidget</extends>
-   <header>klistwidget.h</header>
-  </customwidget>
-  <customwidget>
-   <class>KImageFilePreview</class>
-   <extends>QWidget</extends>
-   <header>kimagefilepreview.h</header>
-  </customwidget>
-  <customwidget>
-   <class>KPushButton</class>
-   <extends>QPushButton</extends>
-   <header>kpushbutton.h</header>
   </customwidget>
   <customwidget>
    <class>KLineEdit</class>
@@ -279,8 +264,28 @@
    <header>klineedit.h</header>
   </customwidget>
   <customwidget>
-   <class>KUrlComboRequester</class>
-   <extends>KUrlRequester</extends>
+   <class>KPushButton</class>
+   <extends>QPushButton</extends>
+   <header>kpushbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KRestrictedLine</class>
+   <extends>KLineEdit</extends>
+   <header>krestrictedline.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header>ktextedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KListWidget</class>
+   <extends>QListWidget</extends>
+   <header>klistwidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KUrlRequester</class>
+   <extends>QFrame</extends>
    <header>kurlrequester.h</header>
    <container>1</container>
   </customwidget>
@@ -291,14 +296,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>KTextEdit</class>
-   <extends>QTextEdit</extends>
-   <header>ktextedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>KRestrictedLine</class>
-   <extends>KLineEdit</extends>
-   <header>krestrictedline.h</header>
+   <class>KImageFilePreview</class>
+   <extends>QWidget</extends>
+   <header>kimagefilepreview.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -327,6 +327,22 @@
     <hint type="destinationlabel">
      <x>132</x>
      <y>336</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cFile</sender>
+   <signal>urlSelected(KUrl)</signal>
+   <receiver>tMessageText</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>299</x>
+     <y>17</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>444</x>
+     <y>277</y>
     </hint>
    </hints>
   </connection>

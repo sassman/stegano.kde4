@@ -1,17 +1,17 @@
 include_directories(
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_BUILD_DIR}
-	${QT_INCLUDE_DIR}
-	${KDE4_INCLUDES}
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_BUILD_DIR}
+    ${QT_INCLUDE_DIR}
+    ${KDE4_INCLUDES}
 )
 include (KDE4Defaults)
 
 set(stegano.kde_SRCS
-	main.cpp
-	steganocore.cpp
-	steganodialog.cpp
-	bititerator.cpp
-	messagecontainer.cpp
+    main.cpp
+    steganocore.cpp
+    steganodialog.cpp
+    bititerator.cpp
+    messagecontainer.cpp
 )
 
 kde4_add_ui_files(stegano.kde_SRCS stegano.ui)
