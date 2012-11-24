@@ -7,8 +7,18 @@ for the .NET based Windows Version take a look at
 
 http://svenomenal.net/devel/steganoV2
 
+
 Build Dependencies
 ==================
 
 Qt Crypto library
 $ sudo apt-get install libqca2-dev qca2-utils
+
+
+Build it
+========
+
+git clone https://github.com/sassman/stegano.kde4.git stegano.kde4 && cd stegano.kde4
+mkdir build && cd build
+cmake ../
+make
