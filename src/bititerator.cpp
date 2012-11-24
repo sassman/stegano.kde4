@@ -8,46 +8,57 @@
 #include "bititerator.h"
 
 BitIterator::BitIterator(const QByteArray& buf) {
-	this->buf = buf;
+    this->buf = buf;
 }
 
 BitIterator::~BitIterator() {
 }
 
-QByteArray BitIterator::data(){
-	this->buf.resize(qstrlen(this->buf));
-	return this->buf;
+QByteArray BitIterator::data() {
+    // this algorithm is more safe then before, it starts from behind and looks for 0x00
+    int resize = 0;
+    for(int i = buf.size()-1; i > 0; i--) {
+        if(buf[i] == (char)0x00) {
+            resize = i;
+        }else {
+            break;
+        }
+    }
+    if(resize > 0) {
+        this->buf.resize(resize);
+    }
+    return this->buf;
 }
 
-uint BitIterator::bit(int i){
+uint BitIterator::bit(int i) {
     uchar curr = buf.size() > i / 8 ? buf[(i / 8)] : (char)0x00;
     return (uint)(curr >> (i % 8) & 0x01);
 }
 
-void BitIterator::setBit(int i, uint b){
-	if (i / 8 > buf.length())
-		buf.resize(buf.length() + 1);
-	
-	//int round = i / 8;
-	//byte current;
+void BitIterator::setBit(int i, uint b) {
+    if (i / 8 > buf.length())
+        buf.resize(buf.length() + 1);
 
-	//current = data[round];
+    //int round = i / 8;
+    //byte current;
 
-	//int shifter = (i - (round * 8));
-	//byte nb = (byte)(b & 0x01);
-	//byte lastBit = (byte)(b & 0x01);
-	//current = (byte)((current << 1) | (b & 0x01));
-	//if (round < data.Length)
-	//    data[round] = current;
+    //current = data[round];
 
-	/* ~ -> NOT Operator to clear the i. postition in byte an than overwrite it
-		* by the bit out from the source
-		*/
-	uchar curr = buf[i / 8];
-	buf[i / 8] = (uchar)((curr & ~((b & 0x01) << i % 8)) | ((b & 0x01) << i % 8));
+    //int shifter = (i - (round * 8));
+    //byte nb = (byte)(b & 0x01);
+    //byte lastBit = (byte)(b & 0x01);
+    //current = (byte)((current << 1) | (b & 0x01));
+    //if (round < data.Length)
+    //    data[round] = current;
+
+    /** ~ -> NOT Operator to clear the i-th postition in byte and than overwrite it
+     * by the bit out from the source
+     */
+    uchar curr = buf[i / 8];
+    buf[i / 8] = (uchar)((curr & ~((b & 0x01) << i % 8)) | ((b & 0x01) << i % 8));
 }
 
 
-uint BitIterator::operator[](int i){
-	return this->bit(i);
+uint BitIterator::operator[](int i) {
+    return this->bit(i);
 }

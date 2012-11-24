@@ -5,17 +5,17 @@
 class MessageContainer {
 
 private:
-	QString textBlock;
-	const char Version;
-	const char Terminator;
+    QString textBlock;
+    const unsigned char Version;
+    const unsigned char Terminator;
 
 public:
-	MessageContainer();
-	virtual ~MessageContainer();
+    MessageContainer();
+    virtual ~MessageContainer();
 
-	void setText(const QString& text);
+    void setText(const QString& text);
 
-	virtual QByteArray getBytes();
+    virtual QByteArray getBytes();
 };
 
 #endif // MESSAGECONTAINER_H
