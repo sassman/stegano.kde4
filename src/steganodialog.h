@@ -1,13 +1,13 @@
 #ifndef STEGANODIALOG_H
 #define STEGANODIALOG_H
 
-#include <KDialog>
+#include <KXmlGuiWindow>
 
 // include the automatically generated header file for the ui-file
 #include "steganocore.h"
 #include "../build/src/ui_stegano.h"
 
-class SteganoDialog : public KDialog, Ui::Stegano {
+class SteganoDialog : public KXmlGuiWindow {
 
     Q_OBJECT
 
@@ -25,7 +25,10 @@ private slots:
     void saveMedia();
 
 private:
+    Ui::Stegano* steganoUI;
     SteganoCore stegano;
+    
+    void setupActions();
 };
 
 #endif
