@@ -1,8 +1,10 @@
-project (stegano.kde)
+project (stegano)
 
 find_package(KDE4 REQUIRED)
 find_package(QCA2 REQUIRED)
 
+include_directories(${KDE4_INCLUDES})
+ 
 if (CMAKE_COMPILER_IS_GNUCXX)
   #set ( CMAKE_CXX_FLAGS "-Wall -Weffc++ -ansi -pedantic")
   set ( CMAKE_CXX_FLAGS "-Wall -ansi -pedantic")
