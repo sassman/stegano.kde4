@@ -1,5 +1,9 @@
 #include <KLocale>
 #include <KMessageBox>
+#include <KIcon>
+#include <KAction>
+#include <KActionCollection>
+#include <KStandardAction>
 
 #include <QPropertyAnimation>
 #include <KDE/Plasma/WindowEffects>
@@ -13,71 +17,121 @@
 // include the header file of the dialog
 #include "steganodialog.h"
 
-SteganoDialog::SteganoDialog( QWidget *parent ) : KDialog( parent ) {
+SteganoDialog::SteganoDialog( QWidget *parent ) : KXmlGuiWindow( parent ) {
 
     // create the user interface, the parent widget is "widget"
-    this->setupUi(this); // this is the important part
+    steganoUI = new Ui::Stegano;
+    QWidget* widget = new QWidget(this);
+    this->steganoUI->setupUi(widget);
+    this->setCentralWidget(widget);
+    this->setupActions();
+    
+    this->setWindowIcon(KIcon("stegano"));
 
     // other KDialog options
     setCaption( i18n("Stegano") );
-    setButtons( NULL );
 
-    connect( &stegano, SIGNAL( keyChanged(QString) ), this->tHash, SLOT( setText(QString) ) );
-    connect( &stegano, SIGNAL( useCryptChanged(bool) ), this->cUseEncryption, SLOT( setChecked(bool) ) );
-    connect( &stegano, SIGNAL( sourceMediaChanged(KUrl) ), this->preview, SLOT( showPreview(KUrl) ) );
+    connect( &stegano, SIGNAL( keyChanged(QString) ), 
+             this->steganoUI->tHash, SLOT( setText(QString) ) 
+    );
+    connect( &stegano, SIGNAL( useCryptChanged(bool) ), 
+             this->steganoUI->cUseEncryption, SLOT( setChecked(bool) ) 
+    );
+    connect( &stegano, SIGNAL( sourceMediaChanged(KUrl) ), 
+             this->steganoUI->preview, SLOT( showPreview(KUrl) ) 
+    );
 
-    connect( this->tPassword, SIGNAL( userTextChanged(const QString&) ), &stegano, SLOT( setPassword(const QString&) ) );
-    connect( this->cUseEncryption, SIGNAL( toggled(bool) ), &stegano, SLOT( setUseCrypt(bool) ) );
-    connect( this->cFile, SIGNAL( textChanged(QString) ), &stegano, SLOT( setSourceMedia(QString) ) );
-    connect( this->buttonHide, SIGNAL( clicked() ), this, SLOT( hideData() ) );
+    connect( this->steganoUI->tPassword, SIGNAL( userTextChanged(const QString&) ), 
+             &stegano, SLOT( setPassword(const QString&) ) 
+    );
+    connect( this->steganoUI->cUseEncryption, SIGNAL( toggled(bool) ), 
+             &stegano, SLOT( setUseCrypt(bool) ) 
+    );
+    connect( this->steganoUI->cFile, SIGNAL( textChanged(QString) ), 
+             &stegano, SLOT( setSourceMedia(QString) ) 
+    );
+    connect( this->steganoUI->buttonHide, SIGNAL( clicked() ), 
+             this, SLOT( hideData() ) 
+    );
 
-    connect( this->buttonUnhide, SIGNAL( clicked() ), this, SLOT( unhideData() ) );
+    connect( this->steganoUI->buttonUnhide, SIGNAL( clicked() ), 
+             this, SLOT( unhideData() ) 
+    );
 
-    connect( this->buttonSave, SIGNAL( clicked() ), this, SLOT( saveMedia() ) );
+    connect( this->steganoUI->buttonSave, SIGNAL( clicked() ), 
+             this, SLOT( saveMedia() ) 
+    );
     
     if(!stegano.isEncryptionSupported()) {
-        this->groupEncryption->setEnabled(false);
+        this->steganoUI->groupEncryption->setEnabled(false);
     }
-
 }
+
+void SteganoDialog::setupActions() {
+
+    KAction* action1 = new KAction(this);
+    action1->setText(i18n("&Open Media"));
+    action1->setIcon(KIcon("document-open"));
+    action1->setShortcut(Qt::CTRL + Qt::Key_O);
+    this->actionCollection()->addAction("open", action1);
+    connect(action1, SIGNAL(triggered(bool)),
+            this->steganoUI->cFile->button(), SLOT( click() )
+    );
+
+    action1 = new KAction(this);
+    action1->setText(i18n("&Save as"));
+    action1->setIcon(KIcon("document-save"));
+    action1->setShortcut(Qt::CTRL + Qt::Key_S);
+    this->actionCollection()->addAction("save as", action1);
+    connect(action1, SIGNAL(triggered(bool)),
+            this, SLOT( saveMedia() )
+    );
+
+    KStandardAction::quit(
+        this , SLOT( close() ),
+        actionCollection()
+    );
+    this->setupGUI();
+}
+
 
 void SteganoDialog::hideData() {
 
-    if(this->cFile->text().isEmpty()) {
-        this->cFile->setFocus();
+    if(this->steganoUI->cFile->text().isEmpty()) {
+        this->steganoUI->cFile->setFocus();
         QMessageBox::information(this, "No media selected", "Please select an image to hide something");
         return;
     }
 
-    if(this->tMessageText->toPlainText().isEmpty()) {
-        this->tMessageText->setFocus();
+    if(this->steganoUI->tMessageText->toPlainText().isEmpty()) {
+        this->steganoUI->tMessageText->setFocus();
         QMessageBox::information(this, "Nothing to hide", "Please type a message or add a file to hide.");
         return;
     }
 
-    stegano.setSourceMedia(this->cFile->text());
+    stegano.setSourceMedia(this->steganoUI->cFile->text());
 
     QProgressDialog progress("Hide Data...", "Cancel", 0, 100, this);
     progress.setWindowModality(Qt::WindowModal);
-    QByteArray data = this->tMessageText->toPlainText().toUtf8();
+    QByteArray data = this->steganoUI->tMessageText->toPlainText().toUtf8();
     stegano.hideData(data, &progress);
     progress.close();
 }
 
 void SteganoDialog::unhideData() {
 
-    if(this->cFile->text().isEmpty()) {
-        this->cFile->setFocus();
+    if(this->steganoUI->cFile->text().isEmpty()) {
+        this->steganoUI->cFile->setFocus();
         QMessageBox::information(this, "No Media given!", "Please give some Media to hide into..");
         return;
     }
 
-    stegano.setSourceMedia(this->cFile->text());
+    stegano.setSourceMedia(this->steganoUI->cFile->text());
 
     QProgressDialog progress("Unhide Data...", "Cancel", 0, 100, this);
     progress.setWindowModality(Qt::WindowModal);
     QByteArray data = stegano.unhideData(&progress);
-    this->tMessageText->setPlainText(QString::fromUtf8(data));
+    this->steganoUI->tMessageText->setPlainText(QString::fromUtf8(data));
     progress.close();
 }
 
@@ -88,7 +142,7 @@ void SteganoDialog::saveMedia() {
         return;
     }
 
-    QString filename = QFileDialog::getSaveFileName(this, "Save Media", cFile->text(), "Stegano Media (*.png)");
+    QString filename = QFileDialog::getSaveFileName(this, "Save Media", this->steganoUI->cFile->text(), "Stegano Media (*.png)");
     //QString filename = cFile->text();
     if(!filename.isEmpty()) {
         stegano.sourceMedia()->save(filename);
