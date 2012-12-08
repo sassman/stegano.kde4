@@ -6,17 +6,23 @@
      xsi:schemaLocation="http://www.kde.org/standards/kxmlgui/1.0
                          http://www.kde.org/standards/kxmlgui/1.0/kxmlgui.xsd" >
  
-  <MenuBar>
-    <Menu name="file" >
-      <Action name="open" />
-      <Action name="save as" />
-    </Menu>
-  </MenuBar>
+    <MenuBar>
+        <Menu name="file" >
+            <Action name="open" />
+            <Separator />
+            <Action name="unhide" />
+            <Separator />
+            <Action name="save as" />
+        </Menu>
+    </MenuBar>
  
-  <ToolBar name="mainToolBar" >
-    <text>Main Toolbar</text>
-    <Action name="open" />
-    <Action name="save as" />
-  </ToolBar>
+    <ToolBar name="mainToolBar" >
+        <text>Main Toolbar</text>
+        <Action name="open" />
+        <Separator />
+        <Action name="unhide" />
+        <Separator />
+        <Action name="save as" />
+    </ToolBar>
  
 </gui>

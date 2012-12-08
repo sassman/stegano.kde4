@@ -21,9 +21,6 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_6">
      <item>
-      <widget class="KUrlComboRequester" name="cFile"/>
-     </item>
-     <item>
       <widget class="QGroupBox" name="groupEncryption">
        <property name="enabled">
         <bool>true</bool>
@@ -126,13 +123,6 @@
                  </property>
                 </widget>
                </item>
-               <item>
-                <widget class="KPushButton" name="buttonSave">
-                 <property name="text">
-                  <string>Speichern</string>
-                 </property>
-                </widget>
-               </item>
               </layout>
              </item>
             </layout>
@@ -159,18 +149,6 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLabel" name="label_5">
-                   <property name="font">
-                    <font>
-                     <pointsize>6</pointsize>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>Zeichenvorrat:</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
                   <widget class="QLabel" name="lCharsAvailable">
                    <property name="font">
                     <font>
@@ -178,7 +156,7 @@
                     </font>
                    </property>
                    <property name="text">
-                    <string>0</string>
+                    <string>0 charachters left</string>
                    </property>
                    <property name="alignment">
                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -202,6 +180,9 @@
                   <layout class="QVBoxLayout" name="verticalLayout_9">
                    <item>
                     <widget class="KTextEdit" name="tMessageText"/>
+                   </item>
+                   <item>
+                    <widget class="KCapacityBar" name="kcapacitybar"/>
                    </item>
                   </layout>
                  </widget>
@@ -234,13 +215,6 @@
                  </property>
                 </widget>
                </item>
-               <item>
-                <widget class="KPushButton" name="buttonHide">
-                 <property name="text">
-                  <string>Verbergen</string>
-                 </property>
-                </widget>
-               </item>
               </layout>
              </item>
             </layout>
@@ -257,10 +231,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>KUrlComboRequester</class>
-   <extends>KUrlRequester</extends>
-   <header>kurlrequester.h</header>
-   <container>1</container>
+   <class>KCapacityBar</class>
+   <extends>QWidget</extends>
+   <header>kcapacitybar.h</header>
   </customwidget>
   <customwidget>
    <class>KLineEdit</class>
@@ -288,12 +261,6 @@
    <header>klistwidget.h</header>
   </customwidget>
   <customwidget>
-   <class>KUrlRequester</class>
-   <extends>QFrame</extends>
-   <header>kurlrequester.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>KTabWidget</class>
    <extends>QTabWidget</extends>
    <header>ktabwidget.h</header>
@@ -306,53 +273,15 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>cFile</tabstop>
   <tabstop>tPassword</tabstop>
   <tabstop>cUseEncryption</tabstop>
   <tabstop>tMessageText</tabstop>
-  <tabstop>buttonHide</tabstop>
-  <tabstop>buttonSave</tabstop>
   <tabstop>buttonAttach</tabstop>
   <tabstop>ktabwidget</tabstop>
   <tabstop>tHash</tabstop>
  </tabstops>
- <resources>
-  <include location="../default.qrc"/>
- </resources>
- <connections>
-  <connection>
-   <sender>cFile</sender>
-   <signal>urlSelected(KUrl)</signal>
-   <receiver>preview</receiver>
-   <slot>showPreview(KUrl)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>429</x>
-     <y>18</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>132</x>
-     <y>336</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>cFile</sender>
-   <signal>urlSelected(KUrl)</signal>
-   <receiver>tMessageText</receiver>
-   <slot>clear()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>299</x>
-     <y>17</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>444</x>
-     <y>277</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <resources/>
+ <connections/>
  <slots>
   <signal>passwordChanged(QString)</signal>
   <slot>calculateHash(QString)</slot>

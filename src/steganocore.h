@@ -12,7 +12,7 @@ class SteganoCore : public QObject {
     Q_OBJECT
 public:
     SteganoCore();
-    ~SteganoCore();
+    virtual ~SteganoCore();
 
 signals:
     void keyChanged(QString);
@@ -28,12 +28,12 @@ public slots:
     void hideData(const QByteArray& source, QProgressDialog* monitor);
 
 public:
-    QImage*     sourceMedia() {
-        return media;
-    }
+    QImage*     sourceMedia() { return media; }
 
     QByteArray  unhideData(QProgressDialog* monitor);
     bool        isEncryptionSupported();
+    bool        isSourceMediaValid();
+    long        getMaximumMessageSize();
 
 private:
     QImage*     media;

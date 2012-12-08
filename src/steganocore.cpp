@@ -17,7 +17,11 @@ SteganoCore::SteganoCore() :
     hashAlgorithm("md5")
 { }
 
-SteganoCore::~SteganoCore() { }
+SteganoCore::~SteganoCore() { 
+    if ( this->media ) {
+        delete this->media;
+    }
+}
 
 void SteganoCore::setPassword(const QString& passw) {
     this->newPassword(passw);
@@ -191,3 +195,31 @@ bool SteganoCore::isEncryptionSupported() {
     }
     return true;
 }
+
+bool SteganoCore::isSourceMediaValid() {
+    if(this->sourceMediaFile.isEmpty()) {
+        return false;
+    }
+    QImage img = QImage(this->sourceMediaFile);
+    if(img.isNull()) {
+        return false;
+    }
+    return true;
+}
+
+/**
+ * if a media is set here the maximium size that is available for data is returned
+ * 
+ * @return max available size in bytes
+ */
+long int SteganoCore::getMaximumMessageSize() {
+    if(this->sourceMediaFile.isEmpty()) {
+        return 0;
+    }
+    
+    QImage media = QImage(this->sourceMediaFile);
+    short colorChannels = 3;
+    return (media.width() * media.height() * colorChannels) / 8;
+    
+}
+
