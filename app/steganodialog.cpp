@@ -62,7 +62,7 @@ SteganoDialog::SteganoDialog( QWidget *parent ) :
         &stegano, SLOT( setUseCrypt(bool) ) 
     );
     connect( this->steganoUI->tMessageText, SIGNAL( textChanged() ), 
-        &stegano, SLOT( setToHideFlag() ) 
+        this, SLOT( setToHideFlag() ) 
     );
     connect( this->steganoUI->tMessageText, SIGNAL( textChanged() ), 
         this, SLOT( showCharacters() ) 

@@ -12,4 +12,5 @@ if (CMAKE_COMPILER_IS_GNUCXX)
   #set ( CMAKE_CXX_FLAGS_RELEASE  "/RELEASE_FLAGS_GO_HERE" )
 endif ()
 
-add_subdirectory(src)
+add_subdirectory(app)
+add_subdirectory(res)

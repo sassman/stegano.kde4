@@ -1,0 +1,1 @@
+install( FILES steganoui.rc DESTINATION  ${DATA_INSTALL_DIR}/stegano )
