@@ -7,9 +7,7 @@
 #include "steganocore.h"
 #include "../build/src/ui_stegano.h"
 
-class SteganoDialog : public KXmlGuiWindow {
-
-    Q_OBJECT
+class SteganoDialog : public KXmlGuiWindow { Q_OBJECT
 
 public:
     SteganoDialog( QWidget *parent=0 );
@@ -19,14 +17,24 @@ public slots:
     void slideDown(QWidget* );
 
 private slots:
-    void hideData();
-    void unhideData();
+    bool hideData();
+    bool unhideData();
     void testingAnimations();
     void saveMedia();
+    void setToHideFlag();
+    void sourceMediaChange();
+    void noValidSourceMedia();
+    void noValidTargetMedia();
+    void noValidMessage();
+    void showSize();
+    void showCharacters();
 
 private:
     Ui::Stegano* steganoUI;
     SteganoCore stegano;
+    bool        isHidden;
+    QString     fileFilterSource;
+    QString     fileFilterTarget;
     
     void setupActions();
 };
