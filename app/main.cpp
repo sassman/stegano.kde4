@@ -2,6 +2,7 @@
 #include <KAboutData>
 #include <KCmdLineArgs>
 #include <KLocale>
+#include <KConfig>
 #include "steganodialog.h"
 
 int main (int argc, char *argv[]) {
@@ -16,6 +17,7 @@ int main (int argc, char *argv[]) {
     KCmdLineArgs::init( argc, argv, &aboutData );
     KApplication app;
     
+    // KConfig* cfg = app.sessionConfig();
     SteganoDialog* window = new SteganoDialog();
     window->show();
 

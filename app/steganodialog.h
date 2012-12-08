@@ -5,7 +5,7 @@
 
 // include the automatically generated header file for the ui-file
 #include "steganocore.h"
-#include "../build/src/ui_stegano.h"
+#include "ui_stegano.h"
 
 class SteganoDialog : public KXmlGuiWindow { Q_OBJECT
 
