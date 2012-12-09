@@ -18,6 +18,8 @@
 // include the header file of the dialog
 #include "steganodialog.h"
 
+namespace Stegano {
+
 SteganoDialog::SteganoDialog( QWidget *parent ) : 
     KXmlGuiWindow( parent ),
     isHidden(false),
@@ -124,8 +126,7 @@ bool SteganoDialog::hideData() {
 
     QProgressDialog progress(i18n("Hide Data..."), i18n("Cancel"), 0, 100, this);
     progress.setWindowModality(Qt::WindowModal);
-    QByteArray data = this->steganoUI->tMessageText->toPlainText().toUtf8();
-    stegano.hideData(data, &progress);
+    stegano.hideData(this->steganoUI->tMessageText->toPlainText(), &progress);
     progress.close();
     return this->isHidden = true;
 }
@@ -139,8 +140,8 @@ bool SteganoDialog::unhideData() {
 
     QProgressDialog progress(i18n("Unhide Data..."), i18n("Cancel"), 0, 100, this);
     progress.setWindowModality(Qt::WindowModal);
-    QByteArray data = stegano.unhideData(&progress);
-    this->steganoUI->tMessageText->setPlainText(QString::fromUtf8(data));
+    QString message = stegano.unhideData(&progress);
+    this->steganoUI->tMessageText->setPlainText(message);
     progress.close();
     return true;
 }
@@ -273,3 +274,5 @@ void SteganoDialog::showCharacters() {
 }
 
 #include "../build/src/steganodialog.moc"
+
+}   

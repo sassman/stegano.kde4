@@ -4,15 +4,25 @@
 #include <QtCrypto/QtCrypto>
 #include <QProgressDialog>
 #include <QByteArray>
+#include <QString>
 #include <KUrl>
 
 #include "bititerator.h"
+
+namespace Stegano {
 
 class SteganoCore : public QObject {
     Q_OBJECT
 public:
     SteganoCore();
     virtual ~SteganoCore();
+
+    QImage*     sourceMedia() { return media; }
+
+    QString     unhideData(QProgressDialog* monitor);
+    bool        isEncryptionSupported();
+    bool        isSourceMediaValid();
+    long        getMaximumMessageSize();
 
 signals:
     void keyChanged(QString);
@@ -25,15 +35,7 @@ public slots:
     void setUseCrypt(bool);
     void setSourceMedia(QString);
 
-    void hideData(const QByteArray& source, QProgressDialog* monitor);
-
-public:
-    QImage*     sourceMedia() { return media; }
-
-    QByteArray  unhideData(QProgressDialog* monitor);
-    bool        isEncryptionSupported();
-    bool        isSourceMediaValid();
-    long        getMaximumMessageSize();
+    void hideData(QString message, QProgressDialog* monitor);
 
 private:
     QImage*     media;
@@ -48,5 +50,7 @@ private:
     QByteArray  decryptData(const QByteArray&   buf);
     void        newPassword(const QString&      passw);
 };
+
+}
 
 #endif
