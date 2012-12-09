@@ -7,6 +7,8 @@
 #include "steganocore.h"
 #include "ui_stegano.h"
 
+namespace Stegano {
+
 class SteganoDialog : public KXmlGuiWindow { Q_OBJECT
 
 public:
@@ -38,5 +40,7 @@ private:
     
     void setupActions();
 };
+
+}
 
 #endif

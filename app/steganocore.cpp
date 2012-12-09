@@ -1,4 +1,5 @@
 #include "steganocore.h"
+#include "messagecontainer.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,6 +8,8 @@
 #include <QtGui/QRgb>
 #include <QtCore/QBitArray>
 
+namespace Stegano {
+    
 SteganoCore::SteganoCore() : 
     media(0),
     keyString(""), 
@@ -59,10 +62,12 @@ void SteganoCore::setSourceMedia(QString source) {
     emit sourceMediaChanged(KUrl(this->sourceMediaFile));
 }
 
-void SteganoCore::hideData(const QByteArray& source, QProgressDialog* monitor) {
-    QByteArray chiffre = QByteArray(source);
-    chiffre.prepend((char) 0x02);
-    chiffre.append((char) 0xff);
+void SteganoCore::hideData(QString message, QProgressDialog* monitor) {
+    
+    MessageContainerV1 messageContainer;
+    messageContainer.setText(message);
+    
+    QByteArray chiffre = messageContainer.bytes();
 
     if (this->useCrypt) {
         chiffre = encryptData(chiffre);
@@ -97,7 +102,7 @@ void SteganoCore::hideData(const QByteArray& source, QProgressDialog* monitor) {
     }
 }
 
-QByteArray SteganoCore::unhideData(QProgressDialog* monitor) {
+QString SteganoCore::unhideData(QProgressDialog* monitor) {
     this->media = new QImage(this->sourceMediaFile);
     BitIterator bi;
 
@@ -127,14 +132,28 @@ QByteArray SteganoCore::unhideData(QProgressDialog* monitor) {
         message = this->decryptData(message);
     }
 
-    if(     message[0] == (char)0x01
-        &&  message[message.length() -1] == (char)0xff
-    ) { // legacy message container
-        message.resize(message.length()-1);
-    }else { // current message container
-        message = message.mid(1, message.length()-2);
+    
+    QCA::Initializer init;
+    qDebug("SteganoCore::unhideData: message raw '%s'", qPrintable(QCA::arrayToHex(message)));
+
+    QString result;
+    IMessageContainer *container = new MessageContainerV1();
+    if(container->isValidFormat(message)) {
+        result = container->text();
+        delete container;
+        return result;
     }
-    return message;
+    
+    container = new MessageContainerV0();
+    if(container->isValidFormat(message)) {
+        result = container->text();
+        delete container;
+        return result;
+    }
+    
+    return QString();
+    //messageContainer.setBytes(message);
+    //return messageContainer.text();
 }
 
 QByteArray SteganoCore::encryptData(const QByteArray& buf) {
@@ -223,3 +242,4 @@ long int SteganoCore::getMaximumMessageSize() {
     
 }
 
+}
