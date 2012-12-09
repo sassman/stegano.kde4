@@ -13,16 +13,13 @@ void MessageContainerBase::setText(const QString& text) {
 }
 
 QByteArray MessageContainerBase::bytes() {
-    this->bytesBuffer = this->textBlock.toUtf8();
     QByteArray bytes;
     QDataStream ms(&bytes, QIODevice::WriteOnly);
     this->bytesBuffer = this->textBlock.toUtf8();
-    ms  << (byte) this->Version
-        << (uint) this->bytesBuffer.length()
-        << this->bytesBuffer
-        << (byte) this->Terminator;
+    ms  << (byte) this->Version;
+    ms.writeRawData(this->bytesBuffer.constData(), this->bytesBuffer.size());
+    ms << (byte) this->Terminator;
     ms.device()->close();
-    /**/
     return bytes;
 }
 
