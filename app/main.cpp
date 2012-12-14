@@ -5,6 +5,8 @@
 #include <KConfig>
 #include "steganodialog.h"
 
+using namespace Stegano;
+
 int main (int argc, char *argv[]) {
 
     KAboutData aboutData(
