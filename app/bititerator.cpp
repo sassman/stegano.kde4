@@ -6,6 +6,7 @@
  */
 
 #include "bititerator.h"
+#include <QtCrypto/QtCrypto>
 
 BitIterator::BitIterator(const QByteArray& buf) {
     this->buf = buf;
@@ -17,8 +18,18 @@ BitIterator::~BitIterator() {
 QByteArray BitIterator::data() {
     // this algorithm is more safe then before, it starts from behind and looks for 0x00
     int resize = 0;
+    uchar current = 0, next = -1, empty = 0x00;
     for(int i = buf.size()-1; i > 0; i--) {
-        if(buf[i] == (char)0x00) {
+        current = buf[i];
+        if ( i - 1 > 0 ) {
+            next = buf[i-1];
+        }else {
+            next = -1;
+        }
+        if(current == empty) {
+            resize = i;
+        //}else if(current == (uchar)0x60 && next == (uchar)0x00) {
+        }else if(current != empty && next == empty) {
             resize = i;
         }else {
             break;
@@ -27,6 +38,8 @@ QByteArray BitIterator::data() {
     if(resize > 0) {
         this->buf.resize(resize);
     }
+    QCA::Initializer init;
+    qDebug("SBitIterator::data: buffer '%s'", qPrintable(QCA::arrayToHex(this->buf)));        
     return this->buf;
 }
 
