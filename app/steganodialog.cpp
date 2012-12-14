@@ -70,9 +70,6 @@ SteganoDialog::SteganoDialog( QWidget *parent ) :
         this, SLOT( showCharacters() ) 
     );
     
-    if(!stegano.isEncryptionSupported()) {
-        this->steganoUI->groupEncryption->setEnabled(false);
-    }
 }
 
 void SteganoDialog::setupActions() {
