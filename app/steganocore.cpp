@@ -15,8 +15,6 @@ SteganoCore::SteganoCore() :
     keyString(""), 
     useCrypt(false), 
     sourceMediaFile(""),
-    encryptionAlgorithm("aes128"),
-    encryptionAlgorithmType("aes128-cbc-pkcs7"),
     hashAlgorithm("md5")
 { }
 
@@ -41,19 +39,21 @@ void SteganoCore::newPassword(const QString& passw) {
     }
     QString hash = "";
     if(passw.length() > 0) {
-        hash = QCA::Hash(this->hashAlgorithm).hashToString(passw.toUtf8());
+        QCA::Hash hashAlg(this->hashAlgorithm);
+        QCA::MemoryRegion hashRaw = hashAlg.hash(passw.toUtf8());
+        this->key = hashRaw.toByteArray();
         this->setUseCrypt(true);
+        this->keyString = hashAlg.hashToString(hashRaw);
+        emit keyChanged( this->keyString );
     }
     else {
         setUseCrypt(false);
     }
-
-    this->keyString = hash;
-    emit keyChanged( this->keyString );
 }
 
 void SteganoCore::setUseCrypt(bool use) {
     this->useCrypt = use;
+    qDebug("SteganoCore::setUseCrypt: keystring '%s'", qPrintable(this->keyString));        
     emit useCryptChanged(this->useCrypt);
 }
 
@@ -64,15 +64,18 @@ void SteganoCore::setSourceMedia(QString source) {
 
 void SteganoCore::hideData(QString message, QProgressDialog* monitor) {
     
-    MessageContainerV1 messageContainer;
-    messageContainer.setText(message);
+    IMessageContainer* messageContainer = new MessageContainerV1();
+    messageContainer->setText(message);
     
-    QByteArray chiffre = messageContainer.bytes();
-
     if (this->useCrypt) {
-        chiffre = encryptData(chiffre);
+        messageContainer = new MessageContainerEncypted(messageContainer, this->key, "");
     }
+    QByteArray chiffre = messageContainer->bytes();
 
+    if( this->media ) {
+        delete this->media;
+        this->media = 0L;
+    }
     this->media = new QImage(this->sourceMediaFile);
     BitIterator bi(chiffre);
 
@@ -100,9 +103,17 @@ void SteganoCore::hideData(QString message, QProgressDialog* monitor) {
             media->setPixel(x, y, nColor.rgb());
         }
     }
+    
+    if( messageContainer ) {
+        delete messageContainer;
+    }
 }
 
 QString SteganoCore::unhideData(QProgressDialog* monitor) {
+    if( this->media ) {
+        delete this->media;
+        this->media = 0L;
+    }
     this->media = new QImage(this->sourceMediaFile);
     BitIterator bi;
 
@@ -128,91 +139,39 @@ QString SteganoCore::unhideData(QProgressDialog* monitor) {
     }
 
     QByteArray message = bi.data();
-    if (this->useCrypt) {
-        message = this->decryptData(message);
-    }
-
-    
-    QCA::Initializer init;
-    qDebug("SteganoCore::unhideData: message raw '%s'", qPrintable(QCA::arrayToHex(message)));
-
     QString result;
     IMessageContainer *container = new MessageContainerV1();
+    
+    // container = new MessageContainerVersion(new MessageContainerBase(bytes), 0x01);
+    if (this->useCrypt) {
+        container = new MessageContainerEncypted(container, this->key, QString(""));
+    }
     if(container->isValidFormat(message)) {
         result = container->text();
         delete container;
         return result;
     }
-    
+
+    if(container) {
+        delete container;
+    }
     container = new MessageContainerV0();
+    qDebug("SteganoCore::unhideData: keystring '%s'", qPrintable(this->key));        
+    if (this->useCrypt) {
+        container = new MessageContainerEncypted(container, this->key, QString(""));
+    }
     if(container->isValidFormat(message)) {
         result = container->text();
         delete container;
         return result;
+    }
+    if(container) {
+        delete container;
     }
     
     return QString();
     //messageContainer.setBytes(message);
     //return messageContainer.text();
-}
-
-QByteArray SteganoCore::encryptData(const QByteArray& buf) {
-    QCA::Initializer init;
-
-    if(!this->isEncryptionSupported()) {
-        return buf;
-    }
-
-    QCA::SymmetricKey key(this->keyString.toUtf8());
-    QCA::InitializationVector iv(this->keyString.toUtf8());
-    QCA::Cipher cipher(
-        this->encryptionAlgorithm,
-        QCA::Cipher::CBC,
-        QCA::Cipher::PKCS7,
-        QCA::Encode,
-        key, iv
-    );
-
-    qDebug("SteganoCore::encryptData: message raw '%s'", qPrintable(QCA::arrayToHex(buf)));
-    QCA::SecureArray secretText = cipher.process(buf);
-    qDebug("SteganoCore::encryptData: message encryped '%s'", qPrintable(QCA::arrayToHex(secretText.toByteArray())));
-    return secretText.toByteArray();
-}
-
-QByteArray SteganoCore::decryptData(const QByteArray& buf) {
-    QCA::Initializer init;
-
-    if(!this->isEncryptionSupported()) {
-        return buf;
-    }
-
-    QCA::SymmetricKey key(this->keyString.toUtf8());
-    QCA::InitializationVector iv(this->keyString.toUtf8());
-    QCA::Cipher cipher(
-        this->encryptionAlgorithm,
-        QCA::Cipher::CBC,
-        QCA::Cipher::PKCS7,
-        QCA::Decode,
-        key, iv
-    );
-
-    qDebug("SteganoCore::decryptData: message raw '%s'", qPrintable(QCA::arrayToHex(buf)));
-    QCA::SecureArray clearText = cipher.process(buf);
-    qDebug("SteganoCore::decryptData: message decryped '%s'", qPrintable(QCA::arrayToHex(clearText.toByteArray())));
-    return clearText.toByteArray();
-}
-
-bool SteganoCore::isEncryptionSupported() {
-    QCA::Initializer init;
-
-    if(!QCA::isSupported(this->encryptionAlgorithmType)) {
-        qDebug("SteganoCore::isEncryptionSupported: encryption algorithm %s with %s not supported!", 
-               this->encryptionAlgorithm, 
-               this->encryptionAlgorithmType
-        );
-        return false;
-    }
-    return true;
 }
 
 bool SteganoCore::isSourceMediaValid() {
