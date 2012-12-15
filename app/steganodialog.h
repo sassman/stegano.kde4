@@ -6,6 +6,7 @@
 // include the automatically generated header file for the ui-file
 #include "steganocore.h"
 #include "ui_stegano.h"
+//#include "ui_stegano_clean.h"
 
 namespace Stegano {
 

@@ -182,7 +182,11 @@
                     <widget class="KTextEdit" name="tMessageText"/>
                    </item>
                    <item>
-                    <widget class="KCapacityBar" name="kcapacitybar"/>
+                    <widget class="QProgressBar" name="kcapacitybar">
+                     <property name="value">
+                      <number>100</number>
+                     </property>
+                    </widget>
                    </item>
                   </layout>
                  </widget>
@@ -230,11 +234,6 @@
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>KCapacityBar</class>
-   <extends>QWidget</extends>
-   <header>kcapacitybar.h</header>
-  </customwidget>
   <customwidget>
    <class>KLineEdit</class>
    <extends>QLineEdit</extends>
