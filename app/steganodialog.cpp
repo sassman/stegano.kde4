@@ -29,12 +29,18 @@ SteganoDialog::SteganoDialog( QWidget *parent ) :
 {
 
     // create the user interface, the parent widget is "widget"
+    //steganoUI = new Ui::SteganoClean;
+    //this->wrapperWidget = new QStackedWidget(this);
+    //this->steganoUI->setupUi((QStackedWidget*) this->wrapperWidget);
+    //this->setCentralWidget(this->wrapperWidget);
+    
+    // create the user interface, the parent widget is "widget"
     steganoUI = new Ui::Stegano;
     QWidget* widget = new QWidget(this);
     this->steganoUI->setupUi(widget);
     this->setCentralWidget(widget);
-    this->setupActions();
     
+    this->setupActions();
     this->setWindowIcon(KIcon("stegano"));
 
     // other KDialog options
@@ -134,7 +140,7 @@ bool SteganoDialog::unhideData() {
         this->noValidSourceMedia();
         return false;
     }
-
+    
     QProgressDialog progress(i18n("Unhide Data..."), i18n("Cancel"), 0, 100, this);
     progress.setWindowModality(Qt::WindowModal);
     QString message = stegano.unhideData(&progress);
@@ -222,6 +228,7 @@ void SteganoDialog::sourceMediaChange(){
     if(!filename.isEmpty()) {
         stegano.setSourceMedia(filename);
         this->setToHideFlag();
+        //((QStackedWidget*) this->wrapperWidget)->setCurrentIndex(1);
     }
 }
 void SteganoDialog::noValidSourceMedia() {
