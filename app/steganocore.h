@@ -3,6 +3,7 @@
 
 #include <QProgressDialog>
 #include <QByteArray>
+#include <QtDebug>
 #include <QString>
 #include <KUrl>
 

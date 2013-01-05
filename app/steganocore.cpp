@@ -140,38 +140,73 @@ QString SteganoCore::unhideData(QProgressDialog* monitor) {
 
     QByteArray message = bi.data();
     QString result;
-    IMessageContainer *container = new MessageContainerV1();
+    bool found = false;
+
+    MessageContainerV0          *cont0      = NULL;
+    MessageContainerV1          *cont1      = NULL;
+    MessageContainerV2          *cont2      = NULL;
+    MessageContainerEncypted    *cont_enc   = NULL;
+    IMessageContainer           *cont_i     = NULL;
+    IDocumentContainer          *cdoc_i     = NULL;
     
-    // container = new MessageContainerVersion(new MessageContainerBase(bytes), 0x01);
+    // check format 1
+    cont1 = new MessageContainerV1();
+    cont_i = qobject_cast< IMessageContainer* >(cont1);
     if (this->useCrypt) {
-        container = new MessageContainerEncypted(container, this->key, QString(""));
+        cont_enc = new MessageContainerEncypted(cont1, this->key, QString(""));
+        cont_i = qobject_cast< IMessageContainer* >(cont_enc);
     }
-    if(container->isValidFormat(message)) {
-        result = container->text();
-        delete container;
-        return result;
+    if(cont_i && cont_i->isValidFormat(message)) {
+        result = cont_i->text();
+        found = true;
+    }
+    
+    if(!found) {
+        // check format 2
+        cont2 = new MessageContainerV2();
+        cont_i = qobject_cast< IMessageContainer* >(cont2);
+        cdoc_i = qobject_cast< IDocumentContainer* >(cont2);
+        if (this->useCrypt) {
+            if(cont_enc) delete cont_enc;
+            cont_enc = new MessageContainerEncypted(cont2, this->key, QString(""));
+            cont_i = qobject_cast< IMessageContainer* >(cont_enc);
+            cdoc_i = qobject_cast< IDocumentContainer* >(cont_enc);
+        }
+        if(cont_i && cont_i->isValidFormat(message)) {
+            result = cont_i->text();
+            
+            if (cdoc_i) {
+                QString all = cdoc_i->files().join(",");
+                qDebug() << all;
+            }
+            found = true;
+        }
+    }
+    
+    if(!found) {
+        // check format 0
+        cont0 = new MessageContainerV0();
+        cont_i = qobject_cast< IMessageContainer* >(cont0);
+        if (this->useCrypt) {
+            if(cont_enc) {
+                delete cont_enc;
+            }
+            cont_enc = new MessageContainerEncypted(cont0, this->key, QString(""));
+            cont_i = qobject_cast< IMessageContainer* >(cont_enc);
+        }
+        if(cont_i && cont_i->isValidFormat(message)) {
+            result = cont_i->text();
+            found = true;
+        }
     }
 
-    if(container) {
-        delete container;
-    }
-    container = new MessageContainerV0();
-    qDebug("SteganoCore::unhideData: keystring '%s'", qPrintable(this->key));        
-    if (this->useCrypt) {
-        container = new MessageContainerEncypted(container, this->key, QString(""));
-    }
-    if(container->isValidFormat(message)) {
-        result = container->text();
-        delete container;
-        return result;
-    }
-    if(container) {
-        delete container;
-    }
+    // cleanup
+    if(cont_enc) delete cont_enc;
+    if(cont0)    delete cont0;
+    if(cont1)    delete cont1;
+    if(cont2)    delete cont2;
     
-    return QString();
-    //messageContainer.setBytes(message);
-    //return messageContainer.text();
+    return result;
 }
 
 bool SteganoCore::isSourceMediaValid() {
