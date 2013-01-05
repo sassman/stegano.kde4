@@ -2,14 +2,18 @@
 #define MESSAGECONTAINER_H
 
 #include <QString>
+#include <QStringList>
 #include <QObject>
 #include <QByteArray>
+#include <QFile>
+#include <QBuffer>
 #include <QtCrypto/QtCrypto>
+#include <quazip/quazip.h>
 
 typedef uchar byte;
 
-class IMessageContainer: public QObject {
-    Q_OBJECT
+class IMessageContainer {
+
 public:
     virtual bool        isValidFormat(const QByteArray& bytes) = 0;
 
@@ -20,10 +24,26 @@ public:
     virtual QString     text() = 0;
     virtual byte        version() = 0;
     virtual byte        terminator() = 0;
+    virtual void        saveRawFile(const QString& filename) = 0;
 };
+Q_DECLARE_INTERFACE(IMessageContainer,
+                    "biz.lubico.Stegano.IMessageContainer/1.0")
 
-class MessageContainerBase : public IMessageContainer {
+class IDocumentContainer {
+
+public: 
+    virtual bool        addFile(QFile) = 0;
+    virtual bool        removeFile(const QString& filename) = 0;
+    virtual bool        extractFile(const QString& filename, QFile& target) = 0;
+    virtual QStringList files() = 0;
+    virtual int         count() = 0;
+};
+Q_DECLARE_INTERFACE(IDocumentContainer,
+                    "biz.lubico.Stegano.IDocumentContainer/1.0")
+
+class MessageContainerBase : public QObject, public IMessageContainer {
     Q_OBJECT
+    Q_INTERFACES(IMessageContainer)
 public:
                         MessageContainerBase();
     virtual             ~MessageContainerBase();
@@ -37,6 +57,8 @@ public:
     virtual byte        version()       { return Version; }
     virtual byte        terminator()    { return Terminator; }
     virtual QString     text()          { return textBlock; }
+    
+    virtual void        saveRawFile(const QString& filename);
     
 signals:
     void        textChanged(QString);
@@ -56,12 +78,10 @@ protected:
 
 };
 
-class MessageContainerWrapper : public IMessageContainer {
+class MessageContainerWrapper : public QObject, public IMessageContainer {
     Q_OBJECT
+    Q_INTERFACES(IMessageContainer)
 public:
-    /**
-     * TODO finalize that http://sourcemaking.com/design_patterns/decorator/cpp/2
-     */
     MessageContainerWrapper(IMessageContainer* wrapee);
     virtual ~MessageContainerWrapper();
     
@@ -73,7 +93,8 @@ public:
     virtual byte terminator()                           { return this->wrapee->terminator(); }
     virtual QString text()                              { return this->wrapee->text(); }
     virtual byte version()                              { return this->wrapee->version(); }
-    
+    virtual void saveRawFile(const QString& filename)   { this->wrapee->saveRawFile(filename); }
+
 protected:
     IMessageContainer* wrapee;    
 };
@@ -113,6 +134,29 @@ public:
     virtual ~MessageContainerV1();
 
     virtual bool        isValidFormat(const QByteArray& bytes);
+    
+protected:
+    MessageContainerV1(byte version, byte terminator);
+};
+
+class MessageContainerV2 : public MessageContainerV1, public IDocumentContainer {
+    Q_OBJECT
+    Q_INTERFACES(IDocumentContainer)
+public:
+    MessageContainerV2();
+    virtual ~MessageContainerV2();
+
+    virtual bool        isValidFormat(const QByteArray& bytes);
+    virtual QString     text();
+    
+    virtual bool        addFile(QFile file);
+    virtual bool        removeFile(const QString& filename);
+    virtual bool        extractFile(const QString& filename, QFile& target);
+    virtual int         count();
+    virtual QStringList files();
+protected:
+    QBuffer *buffer;
+    QuaZip  *archive;
 };
 
 #endif // MESSAGECONTAINER_H

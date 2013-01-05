@@ -1,5 +1,7 @@
 #include "messagecontainer.h"
 #include <QDataStream>
+#include <QFile>
+#include <qbuffer.h>
 
 MessageContainerBase::MessageContainerBase() :
     Version(0),
@@ -37,6 +39,16 @@ void MessageContainerBase::setBytes(const QByteArray& bytes) {
     emit textChanged(this->textBlock);
 }
 
+void MessageContainerBase::saveRawFile(const QString& filename) {
+    
+    QFile file(filename);
+    file.open(QIODevice::WriteOnly);
+    QDataStream out(&file);   // we will serialize the data into the file
+    out.writeRawData(this->bytesBuffer, this->bytesBuffer.length());
+    file.close();
+}
+
+
 MessageContainerWrapper::MessageContainerWrapper(IMessageContainer* wrapee) :
     wrapee(wrapee) { }
     
@@ -59,6 +71,10 @@ MessageContainerV1::MessageContainerV1() :
     MessageContainerBase(0x01, 0xff) 
 { }
 
+MessageContainerV1::MessageContainerV1(byte version, byte terminator) :
+    MessageContainerBase(version, terminator) 
+{ }
+
 MessageContainerV1::~MessageContainerV1() { }
 
 bool MessageContainerV1::isValidFormat(const QByteArray& bytes) {
@@ -73,7 +89,6 @@ bool MessageContainerV1::isValidFormat(const QByteArray& bytes) {
     char* data;
     
     ms>>version;
-    // ms>>length;
     if(length < 1) {
         return false;
     }
@@ -110,6 +125,73 @@ bool MessageContainerV1::isValidFormat(const QByteArray& bytes) {
         return true;
     }
     return false;
+}
+
+MessageContainerV2::MessageContainerV2() : 
+    MessageContainerV1(0x02, 0xff),
+    buffer(NULL),
+    archive(NULL)
+{ }
+
+MessageContainerV2::~MessageContainerV2() {
+    if(this->archive) {
+        if(this->archive->isOpen()) this->archive->close();
+        delete this->archive;
+    }
+    if(this->buffer) delete this->buffer;
+}
+
+bool MessageContainerV2::isValidFormat(const QByteArray& bytes)
+{
+    bool result = MessageContainerV1::isValidFormat(bytes);
+    if(result) {
+        this->saveRawFile("/tmp/rawmessage");
+        if(this->buffer) delete this->buffer;
+        this->buffer = new QBuffer(&this->bytesBuffer);
+        if(this->archive) delete this->archive;
+        this->archive = new QuaZip(this->buffer);
+        if(!this->archive->open(QuaZip::mdUnzip)) {
+            delete this->archive;
+            this->archive = NULL;
+            
+            return false;
+        }
+    }
+    return result;
+}
+
+QString MessageContainerV2::text()
+{
+    // TODO check encoding of comment and convert it to utf8 if necessary
+    //      this->archive->getCommentCodec () returns QTextCodec*
+    return this->archive->getComment();
+}
+
+
+bool MessageContainerV2::addFile(QFile file) {
+    return false;
+}
+
+bool MessageContainerV2::removeFile(const QString& filename)
+{
+    return false;
+}
+
+bool MessageContainerV2::extractFile(const QString& filename, QFile& target)
+{
+    return false;
+}
+
+int MessageContainerV2::count()
+{
+    return 0;
+}
+
+QStringList MessageContainerV2::files() {
+    if(this->archive && this->archive->isOpen()) {
+        return this->archive->getFileNameList();
+    }
+    return QStringList();
 }
 
 MessageContainerEncypted::MessageContainerEncypted(IMessageContainer* wrapee, const QByteArray& key, const QString& algorithm) : 
