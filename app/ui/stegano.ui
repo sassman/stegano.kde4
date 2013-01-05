@@ -138,6 +138,13 @@
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_8">
              <item>
+              <widget class="QProgressBar" name="kcapacitybar">
+               <property name="value">
+                <number>100</number>
+               </property>
+              </widget>
+             </item>
+             <item>
               <layout class="QVBoxLayout" name="verticalLayout_4">
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -170,6 +177,9 @@
                  <property name="enabled">
                   <bool>true</bool>
                  </property>
+                 <property name="tabPosition">
+                  <enum>QTabWidget::West</enum>
+                 </property>
                  <property name="currentIndex">
                   <number>0</number>
                  </property>
@@ -182,9 +192,12 @@
                     <widget class="KTextEdit" name="tMessageText"/>
                    </item>
                    <item>
-                    <widget class="QProgressBar" name="kcapacitybar">
-                     <property name="value">
-                      <number>100</number>
+                    <widget class="KPushButton" name="buttonAttach">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                     <property name="text">
+                      <string>Anhänge hinzufügen</string>
                      </property>
                     </widget>
                    </item>
@@ -199,24 +212,10 @@
                   </attribute>
                   <layout class="QVBoxLayout" name="verticalLayout_10">
                    <item>
-                    <widget class="KListWidget" name="klistwidget"/>
+                    <widget class="KListWidget" name="listFiles"/>
                    </item>
                   </layout>
                  </widget>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_3">
-               <item>
-                <widget class="KPushButton" name="buttonAttach">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="text">
-                  <string>Anhänge hinzufügen</string>
-                 </property>
                 </widget>
                </item>
               </layout>
@@ -275,7 +274,6 @@
   <tabstop>tPassword</tabstop>
   <tabstop>cUseEncryption</tabstop>
   <tabstop>tMessageText</tabstop>
-  <tabstop>buttonAttach</tabstop>
   <tabstop>ktabwidget</tabstop>
   <tabstop>tHash</tabstop>
  </tabstops>
