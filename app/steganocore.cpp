@@ -141,42 +141,40 @@ QString SteganoCore::unhideData(QProgressDialog* monitor) {
     QByteArray message = bi.data();
     QString result;
     bool found = false;
-
-    MessageContainerV0          *cont0      = NULL;
-    MessageContainerV1          *cont1      = NULL;
-    MessageContainerV2          *cont2      = NULL;
-    MessageContainerEncypted    *cont_enc   = NULL;
-    IMessageContainer           *cont_i     = NULL;
-    IDocumentContainer          *cdoc_i     = NULL;
+    IMessageContainer*  icmes      = NULL;
+    IDocumentContainer* icdoc      = NULL;
     
     // check format 1
-    cont1 = new MessageContainerV1();
-    cont_i = qobject_cast< IMessageContainer* >(cont1);
+    QObject*    container = new MessageContainerV1();
+    MessageContainerEncypted* econtainer = NULL;
+    icmes = qobject_cast< IMessageContainer* >(container);
     if (this->useCrypt) {
-        cont_enc = new MessageContainerEncypted(cont1, this->key, QString(""));
-        cont_i = qobject_cast< IMessageContainer* >(cont_enc);
+        qDebug() << "container @ " << (void*) container << " IMessageContainer* @ " << (void*) icmes;
+        econtainer = new MessageContainerEncypted(icmes, this->key, QString(""));
+        icmes = qobject_cast< IMessageContainer* >(econtainer);
     }
-    if(cont_i && cont_i->isValidFormat(message)) {
-        result = cont_i->text();
+    if(icmes && icmes->isValidFormat(message)) {
+        result = icmes->text();
         found = true;
     }
     
     if(!found) {
         // check format 2
-        cont2 = new MessageContainerV2();
-        cont_i = qobject_cast< IMessageContainer* >(cont2);
-        cdoc_i = qobject_cast< IDocumentContainer* >(cont2);
+        delete container;
+        container = new MessageContainerV2();
+        icmes = qobject_cast< IMessageContainer* >(container);
+        icdoc = qobject_cast< IDocumentContainer* >(container);
         if (this->useCrypt) {
-            if(cont_enc) delete cont_enc;
-            cont_enc = new MessageContainerEncypted(cont2, this->key, QString(""));
-            cont_i = qobject_cast< IMessageContainer* >(cont_enc);
-            cdoc_i = qobject_cast< IDocumentContainer* >(cont_enc);
+            if (econtainer) delete econtainer;
+            econtainer = new MessageContainerEncypted(icmes, this->key, QString(""));
+            icmes = qobject_cast< IMessageContainer* >(econtainer);
+            icdoc = qobject_cast< IDocumentContainer* >(econtainer);
         }
-        if(cont_i && cont_i->isValidFormat(message)) {
-            result = cont_i->text();
+        if(icmes && icmes->isValidFormat(message)) {
+            result = icmes->text();
             
-            if (cdoc_i) {
-                QString all = cdoc_i->files().join(",");
+            if (icdoc) {
+                QString all = icdoc->files().join(",");
                 qDebug() << all;
             }
             found = true;
@@ -185,26 +183,23 @@ QString SteganoCore::unhideData(QProgressDialog* monitor) {
     
     if(!found) {
         // check format 0
-        cont0 = new MessageContainerV0();
-        cont_i = qobject_cast< IMessageContainer* >(cont0);
+        delete container;
+        container = new MessageContainerV0();
+        icmes = qobject_cast< IMessageContainer* >(container);
         if (this->useCrypt) {
-            if(cont_enc) {
-                delete cont_enc;
-            }
-            cont_enc = new MessageContainerEncypted(cont0, this->key, QString(""));
-            cont_i = qobject_cast< IMessageContainer* >(cont_enc);
+            if (econtainer) delete econtainer;
+            econtainer = new MessageContainerEncypted(icmes, this->key, QString(""));
+            icmes = qobject_cast< IMessageContainer* >(econtainer);
         }
-        if(cont_i && cont_i->isValidFormat(message)) {
-            result = cont_i->text();
+        if(icmes && icmes->isValidFormat(message)) {
+            result = icmes->text();
             found = true;
         }
     }
 
     // cleanup
-    if(cont_enc) delete cont_enc;
-    if(cont0)    delete cont0;
-    if(cont1)    delete cont1;
-    if(cont2)    delete cont2;
+    if(container) delete container;
+    if(econtainer) delete econtainer;
     
     return result;
 }

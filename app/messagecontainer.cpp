@@ -8,7 +8,9 @@ MessageContainerBase::MessageContainerBase() :
     Terminator(0) 
 { }
 
-MessageContainerBase::~MessageContainerBase() { }
+MessageContainerBase::~MessageContainerBase() { 
+    qDebug() << "Destruct MessageContainerBase@" << (void*)this;
+}
 
 void MessageContainerBase::setText(const QString& text) {
     this->textBlock = text;
@@ -53,13 +55,13 @@ MessageContainerWrapper::MessageContainerWrapper(IMessageContainer* wrapee) :
     wrapee(wrapee) { }
     
 MessageContainerWrapper::~MessageContainerWrapper() {
-    if ( this->wrapee ) {
-        delete this->wrapee;
-    }
+    qDebug() << "Destruct MessageContainerWrapper @" << (void*)this;
 }
 
 MessageContainerV0::MessageContainerV0()    { }
-MessageContainerV0::~MessageContainerV0()   { }
+MessageContainerV0::~MessageContainerV0()   {     
+    qDebug() << "Destruct MessageContainerV0 @" << (void*)this;
+}
 
 bool MessageContainerV0::isValidFormat(const QByteArray& bytes) {
     this->bytesBuffer = bytes;
@@ -75,7 +77,9 @@ MessageContainerV1::MessageContainerV1(byte version, byte terminator) :
     MessageContainerBase(version, terminator) 
 { }
 
-MessageContainerV1::~MessageContainerV1() { }
+MessageContainerV1::~MessageContainerV1() { 
+    qDebug() << "Destruct MessageContainerV1 @" << (void*)this;
+}
 
 bool MessageContainerV1::isValidFormat(const QByteArray& bytes) {
 
@@ -134,6 +138,8 @@ MessageContainerV2::MessageContainerV2() :
 { }
 
 MessageContainerV2::~MessageContainerV2() {
+    qDebug() << "Destruct MessageContainerV2 @" << (void*)this;
+    
     if(this->archive) {
         if(this->archive->isOpen()) this->archive->close();
         delete this->archive;
@@ -211,8 +217,10 @@ MessageContainerEncypted::MessageContainerEncypted(IMessageContainer* wrapee, co
 }
 
 MessageContainerEncypted::~MessageContainerEncypted() {
-    this->cipher    && delete this->cipher;
-    this->init      && delete this->init;
+    qDebug() << "Destruct MessageContainerEncypted @" << (void*)this;
+
+    if(this->cipher) delete this->cipher;
+    if(this->init) delete this->init;
 }
 
 bool MessageContainerEncypted::isEncryptionSupported() {
