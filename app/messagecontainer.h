@@ -7,6 +7,7 @@
 #include <QByteArray>
 #include <QFile>
 #include <QBuffer>
+#include <QtDebug>
 #include <QtCrypto/QtCrypto>
 #include <quazip/quazip.h>
 
