@@ -161,65 +161,6 @@ QString SteganoCore::unhideData(QProgressDialog* monitor) {
         qDebug() << all;
     }
     
-    /*
-    // check format 1
-    QObject*    container = new MessageContainerV1();
-    MessageContainerEncypted* econtainer = NULL;
-    icmes = qobject_cast< IMessageContainer* >(container);
-    if (this->useCrypt) {
-        qDebug() << "container @ " << (void*) container << " IMessageContainer* @ " << (void*) icmes;
-        econtainer = new MessageContainerEncypted(icmes, this->key, QString(""));
-        icmes = qobject_cast< IMessageContainer* >(econtainer);
-    }
-    if(icmes && icmes->isValidFormat(message)) {
-        result = icmes->text();
-        found = true;
-    }
-    
-    if(!found) {
-        // check format 2
-        delete container;
-        container = new MessageContainerV2();
-        icmes = qobject_cast< IMessageContainer* >(container);
-        icdoc = qobject_cast< IDocumentContainer* >(container);
-        if (this->useCrypt) {
-            if (econtainer) delete econtainer;
-            econtainer = new MessageContainerEncypted(icmes, this->key, QString(""));
-            icmes = qobject_cast< IMessageContainer* >(econtainer);
-            icdoc = qobject_cast< IDocumentContainer* >(econtainer);
-        }
-        if(icmes && icmes->isValidFormat(message)) {
-            result = icmes->text();
-            
-            if (icdoc) {
-                QString all = icdoc->files().join(",");
-                qDebug() << all;
-            }
-            found = true;
-        }
-    }
-    
-    if(!found) {
-        // check format 0
-        delete container;
-        container = new MessageContainerV0();
-        icmes = qobject_cast< IMessageContainer* >(container);
-        if (this->useCrypt) {
-            if (econtainer) delete econtainer;
-            econtainer = new MessageContainerEncypted(icmes, this->key, QString(""));
-            icmes = qobject_cast< IMessageContainer* >(econtainer);
-        }
-        if(icmes && icmes->isValidFormat(message)) {
-            result = icmes->text();
-            found = true;
-        }
-    }
-
-    // cleanup
-    if(container) delete container;
-    if(econtainer) delete econtainer;
-    */
-    
     return result;
 }
 
