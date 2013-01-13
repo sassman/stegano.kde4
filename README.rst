@@ -8,7 +8,7 @@ the .NET based Windows Version can be found here_
 .. _here: http://svenomenal.net/devel/steganoV2
 
 Build Dependencies
-==================
+------------------
 
 - Qt Crypto library
 - QuaZIP_ library
@@ -17,11 +17,11 @@ Build Dependencies
 
 ::
 
-    $ sudo apt-get install libqca2-dev qca2-utils libquazip0-dev libquazip0
+    sudo apt-get install libqca2-dev qca2-utils libquazip0-dev libquazip0
 
 
 Build it
-========
+--------
 
 ::
 
