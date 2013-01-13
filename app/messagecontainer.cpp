@@ -56,6 +56,7 @@ MessageContainerWrapper::MessageContainerWrapper(IMessageContainer* wrapee) :
     
 MessageContainerWrapper::~MessageContainerWrapper() {
     qDebug() << "Destruct MessageContainerWrapper @" << (void*)this;
+    if(this->wrapee) delete this->wrapee;
 }
 
 MessageContainerV0::MessageContainerV0()    { }
