@@ -218,16 +218,22 @@ void SteganoDialog::setToHideFlag() {
 }
 
 void SteganoDialog::sourceMediaChange(){
+
+    KSharedConfigPtr config = KGlobal::config();
+    KConfigGroup generalGroup( config, "General" );
+    QString cfgKey("lastOpenDir");
     
     QString filename = QFileDialog::getOpenFileName(
         this, 
         i18n("Open Media for Message"), 
-        QString(),
+        generalGroup.readPathEntry(cfgKey, QString("")),
         this->fileFilterSource
     );
-    if(!filename.isEmpty()) {
+    QFileInfo info(filename);
+    if( info.isReadable() ) {
         stegano.setSourceMedia(filename);
         this->setToHideFlag();
+        generalGroup.writePathEntry(cfgKey, info.dir().absolutePath() );
         //((QStackedWidget*) this->wrapperWidget)->setCurrentIndex(1);
     }
 }
