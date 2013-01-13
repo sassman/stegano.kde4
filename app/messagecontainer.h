@@ -13,11 +13,17 @@
 
 typedef uchar byte;
 
-class IMessageContainer {
-
+class ISteganoContainer {
 public:
     virtual bool        isValidFormat(const QByteArray& bytes) = 0;
+    virtual ~ISteganoContainer() {};
+};
+Q_DECLARE_INTERFACE(ISteganoContainer,
+                    "biz.lubico.Stegano.ISteganoContainer/1.0")
 
+class IMessageContainer : public ISteganoContainer{
+public:
+    virtual ~IMessageContainer() {};
     virtual void        setText(const QString& text) = 0;
     virtual void        setBytes(const QByteArray& bytes) = 0;
     virtual QByteArray  bytes() = 0;
@@ -30,9 +36,9 @@ public:
 Q_DECLARE_INTERFACE(IMessageContainer,
                     "biz.lubico.Stegano.IMessageContainer/1.0")
 
-class IDocumentContainer {
-
+class IDocumentContainer : public ISteganoContainer{
 public: 
+    virtual ~IDocumentContainer() {}
     virtual bool        addFile(QFile) = 0;
     virtual bool        removeFile(const QString& filename) = 0;
     virtual bool        extractFile(const QString& filename, QFile& target) = 0;
@@ -44,7 +50,7 @@ Q_DECLARE_INTERFACE(IDocumentContainer,
 
 class MessageContainerBase : public QObject, public IMessageContainer {
     Q_OBJECT
-    Q_INTERFACES(IMessageContainer)
+    Q_INTERFACES(IMessageContainer ISteganoContainer)
 public:
                         MessageContainerBase();
     virtual             ~MessageContainerBase();
@@ -81,7 +87,7 @@ protected:
 
 class MessageContainerWrapper : public QObject, public IMessageContainer {
     Q_OBJECT
-    Q_INTERFACES(IMessageContainer)
+    Q_INTERFACES(IMessageContainer ISteganoContainer)
 public:
     MessageContainerWrapper(IMessageContainer* wrapee);
     virtual ~MessageContainerWrapper();
