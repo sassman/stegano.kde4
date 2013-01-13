@@ -1,5 +1,6 @@
 #include "steganocore.h"
 #include "messagecontainer.h"
+#include "MessageContainerFactory.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -141,9 +142,26 @@ QString SteganoCore::unhideData(QProgressDialog* monitor) {
     QByteArray message = bi.data();
     QString result;
     bool found = false;
+    ISteganoContainer*  container  = NULL;
     IMessageContainer*  icmes      = NULL;
     IDocumentContainer* icdoc      = NULL;
     
+    if(this->useCrypt) {
+        container = MessageContainerFactory::createMessageContainerFromRaw(message, this->key);
+    }else {
+        container = MessageContainerFactory::createMessageContainerFromRaw(message);
+    }
+    icmes = dynamic_cast< IMessageContainer* >(container);
+    icdoc = dynamic_cast< IDocumentContainer* >(container);
+    if(icmes) {
+        result = icmes->text();
+    }
+    if(icdoc) {
+        QString all = icdoc->files().join(",");
+        qDebug() << all;
+    }
+    
+    /*
     // check format 1
     QObject*    container = new MessageContainerV1();
     MessageContainerEncypted* econtainer = NULL;
@@ -200,6 +218,7 @@ QString SteganoCore::unhideData(QProgressDialog* monitor) {
     // cleanup
     if(container) delete container;
     if(econtainer) delete econtainer;
+    */
     
     return result;
 }
