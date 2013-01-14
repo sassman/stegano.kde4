@@ -5,14 +5,18 @@
 #include <QByteArray>
 #include <QtDebug>
 #include <QString>
+#include <QStringList>
+#include <QFile>
 #include <KUrl>
 
 #include "bititerator.h"
+#include "messagecontainer.h"
 
 namespace Stegano {
 
-class SteganoCore : public QObject {
+class SteganoCore : public QObject, public IDocumentContainer{
     Q_OBJECT
+    Q_INTERFACES(IDocumentContainer ISteganoContainer)
 public:
     SteganoCore();
     virtual ~SteganoCore();
@@ -22,6 +26,13 @@ public:
     QString     unhideData(QProgressDialog* monitor);
     bool        isSourceMediaValid();
     long        getMaximumMessageSize();
+    
+    virtual bool        isValidFormat(const QByteArray& bytes) { return true; };
+    virtual bool        addFile(QFile& file);
+    virtual bool        removeFile(const QString& filename);
+    virtual bool        extractFile(const QString& filename, QFile& target);
+    virtual QStringList files();
+    virtual int         count();
 
 signals:
     void keyChanged(QString);
@@ -43,6 +54,8 @@ private:
     bool        useCrypt;
     QString     sourceMediaFile;
     const char* hashAlgorithm;
+    
+    ISteganoContainer*  currentContainer;
 
     void        newPassword(const QString&      passw);
 };

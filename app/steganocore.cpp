@@ -16,13 +16,15 @@ SteganoCore::SteganoCore() :
     keyString(""), 
     useCrypt(false), 
     sourceMediaFile(""),
-    hashAlgorithm("md5")
+    hashAlgorithm("md5"),
+    currentContainer(NULL)
 { }
 
 SteganoCore::~SteganoCore() { 
     if ( this->media ) {
         delete this->media;
     }
+    if(this->currentContainer) delete this->currentContainer;
 }
 
 void SteganoCore::setPassword(const QString& passw) {
@@ -65,7 +67,11 @@ void SteganoCore::setSourceMedia(QString source) {
 
 void SteganoCore::hideData(QString message, QProgressDialog* monitor) {
     
-    IMessageContainer* messageContainer = new MessageContainerV1();
+    if (!this->currentContainer) {
+        this->currentContainer = new MessageContainerV1();
+    }
+    
+    IMessageContainer* messageContainer = dynamic_cast<IMessageContainer*>(this->currentContainer);
     messageContainer->setText(message);
     
     if (this->useCrypt) {
@@ -105,9 +111,6 @@ void SteganoCore::hideData(QString message, QProgressDialog* monitor) {
         }
     }
     
-    if( messageContainer ) {
-        delete messageContainer;
-    }
 }
 
 QString SteganoCore::unhideData(QProgressDialog* monitor) {
@@ -161,6 +164,9 @@ QString SteganoCore::unhideData(QProgressDialog* monitor) {
         qDebug() << all;
     }
     
+    if (this->currentContainer) delete this->currentContainer;
+    this->currentContainer = container;
+    
     return result;
 }
 
@@ -189,6 +195,40 @@ long int SteganoCore::getMaximumMessageSize() {
     short colorChannels = 3;
     return (media.width() * media.height() * colorChannels) / 8;
     
+}
+
+bool SteganoCore::addFile(QFile& file) {
+    if(!this->currentContainer) {
+        IDocumentContainer* i = new MessageContainerV2();
+        this->currentContainer = i;
+    }
+    return (dynamic_cast<IDocumentContainer*>(this->currentContainer))->addFile(file);
+}
+
+int SteganoCore::count()
+{
+    if(this->currentContainer) {
+        return (dynamic_cast<IDocumentContainer*>(this->currentContainer))->count();
+    }
+    return 0;
+}
+
+bool SteganoCore::extractFile(const QString& filename, QFile& target)
+{
+    return false;
+}
+
+QStringList SteganoCore::files()
+{
+    if(this->currentContainer) {
+        return (dynamic_cast<IDocumentContainer*>(this->currentContainer))->files();
+    }
+    return QStringList();
+}
+
+bool SteganoCore::removeFile(const QString& filename)
+{
+    return false;
 }
 
 }
