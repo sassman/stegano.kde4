@@ -156,19 +156,27 @@ void SteganoDialog::saveMedia() {
         return;
     }
 
+    KSharedConfigPtr config = KGlobal::config();
+    KConfigGroup generalGroup( config, "General" );
+    QString cfgKey("lastOpenDir");
+
     QString filename = QFileDialog::getSaveFileName(
         this, 
         i18n("Save Media"), 
-        QString(),
+        generalGroup.readPathEntry(cfgKey, QString("")),
         this->fileFilterTarget
     );
-    if(!filename.isEmpty()) {   // TODO check for writing permissions
+    QFileInfo info(filename);
+    QDir      dir = info.dir().absolutePath();
+    if( !info.exists() || info.isWritable() ) {
         stegano.sourceMedia()->save(filename);
         KMessageBox::information(
             this, 
             i18n("The Stegano Media was saved to file"),
             i18n("Media Saved") 
         );
+    }else {
+        this->noValidPermissionsOnMedia();
     }
 }
 
@@ -249,6 +257,13 @@ void SteganoDialog::noValidTargetMedia() {
         this, 
         i18n("Please select an image to hide the data in it"),
         i18n("No valid target media found")
+    );
+}
+void SteganoDialog::noValidPermissionsOnMedia() {
+    KMessageBox::information(
+        this, 
+        i18n("You are not allowed to perform this operation on the selected media"),
+        i18n("This operation is not allowed")
     );
 }
 void SteganoDialog::noValidMessage() {

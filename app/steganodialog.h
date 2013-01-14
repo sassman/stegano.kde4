@@ -28,6 +28,7 @@ private slots:
     void sourceMediaChange();
     void noValidSourceMedia();
     void noValidTargetMedia();
+    void noValidPermissionsOnMedia();
     void noValidMessage();
     void showSize();
     void showCharacters();

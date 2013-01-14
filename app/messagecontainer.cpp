@@ -1,7 +1,7 @@
 #include "messagecontainer.h"
 #include <QDataStream>
 #include <QFile>
-#include <qbuffer.h>
+#include <QBuffer>
 
 MessageContainerBase::MessageContainerBase() :
     Version(0),
