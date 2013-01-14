@@ -39,7 +39,7 @@ Q_DECLARE_INTERFACE(IMessageContainer,
 class IDocumentContainer : public ISteganoContainer{
 public: 
     virtual ~IDocumentContainer() {}
-    virtual bool        addFile(QFile) = 0;
+    virtual bool        addFile(QFile&) = 0;
     virtual bool        removeFile(const QString& filename) = 0;
     virtual bool        extractFile(const QString& filename, QFile& target) = 0;
     virtual QStringList files() = 0;
@@ -156,7 +156,7 @@ public:
     virtual bool        isValidFormat(const QByteArray& bytes);
     virtual QString     text();
     
-    virtual bool        addFile(QFile file);
+    virtual bool        addFile(QFile& file);
     virtual bool        removeFile(const QString& filename);
     virtual bool        extractFile(const QString& filename, QFile& target);
     virtual int         count();

@@ -175,7 +175,7 @@ QString MessageContainerV2::text()
 }
 
 
-bool MessageContainerV2::addFile(QFile file) {
+bool MessageContainerV2::addFile(QFile& file) {
     return false;
 }
 
