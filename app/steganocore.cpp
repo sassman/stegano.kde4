@@ -164,9 +164,6 @@ QString SteganoCore::unhideData(QProgressDialog* monitor) {
         qDebug() << all;
     }
     
-    if (this->currentContainer) delete this->currentContainer;
-    this->currentContainer = container;
-    
     return result;
 }
 
