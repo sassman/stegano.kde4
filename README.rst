@@ -37,6 +37,7 @@ one other way is to use your home dir for kde specific storage. The CMAKE_INSTAL
 to a directory of your choice. I suggest the following
 
 :: 
+
     cd build
     mkdir $HOME/playground
     cmake -DCMAKE_INSTALL_PREFIX=$HOME/playground ../
