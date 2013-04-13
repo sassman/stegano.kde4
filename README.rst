@@ -1,7 +1,7 @@
 Stegano.kde4 a Steganographic tool for KDE4
 ===========================================
 
-still under development - pre beta status
+still under development - beta status
 
 the .NET based Windows Version can be found here_
 
