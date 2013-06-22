@@ -17,7 +17,6 @@ set(stegano_SRCS
 
 kde4_add_ui_files(stegano_SRCS 
     ui/stegano.ui 
-    ui/stegano-clean.ui
 )
 
 kde4_add_executable(stegano ${stegano_SRCS})
