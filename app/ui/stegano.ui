@@ -26,7 +26,7 @@
         <bool>true</bool>
        </property>
        <property name="title">
-        <string>Verschlüsselung</string>
+        <string>Encryption</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
@@ -34,7 +34,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="label">
             <property name="text">
-             <string>Passwort</string>
+             <string>Password</string>
             </property>
             <property name="buddy">
              <cstring>tPassword</cstring>
@@ -46,7 +46,7 @@
             <property name="showClearButton" stdset="0">
              <bool>true</bool>
             </property>
-            <property name="passwordMode">
+            <property name="passwordMode" stdset="0">
              <bool>true</bool>
             </property>
            </widget>
@@ -71,7 +71,7 @@
           <item row="0" column="2">
            <widget class="QCheckBox" name="cUseEncryption">
             <property name="text">
-             <string>Verschlüsseln</string>
+             <string>enable encryption</string>
             </property>
            </widget>
           </item>
@@ -83,7 +83,7 @@
      <item>
       <widget class="QGroupBox" name="groupBox_2">
        <property name="title">
-        <string>Geheimnisse Verbergen..</string>
+        <string>Hide Secrets</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
@@ -102,26 +102,12 @@
                <item>
                 <widget class="QLabel" name="label_3">
                  <property name="text">
-                  <string>Vorschau</string>
+                  <string>Media Preview</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="KImageFilePreview" name="preview"/>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout">
-               <item>
-                <widget class="KPushButton" name="buttonUnhide">
-                 <property name="enabled">
-                  <bool>true</bool>
-                 </property>
-                 <property name="text">
-                  <string>Sichtbar machen</string>
-                 </property>
-                </widget>
+                <widget class="KImageFilePreview" name="preview" native="true"/>
                </item>
               </layout>
              </item>
@@ -151,7 +137,7 @@
                  <item>
                   <widget class="QLabel" name="label_4">
                    <property name="text">
-                    <string>Botschaft</string>
+                    <string>Message</string>
                    </property>
                   </widget>
                  </item>
@@ -197,7 +183,7 @@
                       <bool>false</bool>
                      </property>
                      <property name="text">
-                      <string>Anhänge hinzufügen</string>
+                      <string>Add Attachment</string>
                      </property>
                     </widget>
                    </item>
@@ -208,7 +194,7 @@
                    <bool>false</bool>
                   </property>
                   <attribute name="title">
-                   <string>Dokumente</string>
+                   <string>Documents</string>
                   </attribute>
                   <layout class="QVBoxLayout" name="verticalLayout_10">
                    <item>
