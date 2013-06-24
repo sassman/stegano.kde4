@@ -13,6 +13,7 @@
 
 #include <KDE/Plasma/WindowEffects>
 #include <KWindowSystem>
+#include <KStatusBar>
 #include <KMessageBox>
 
 // include the header file of the dialog
@@ -297,7 +298,8 @@ void SteganoDialog::showCharacters() {
     long chars_max = this->stegano.getMaximumMessageSize() / 2;
     long chars_used = chars_max - this->steganoUI->messageText->toPlainText().length();
     QString size = QString("%L1 characters left").arg(chars_used);
-    // this->steganoUI->lCharsAvailable->setText( size );
+    this->statusBar()->clearMessage();
+    this->statusBar()->showMessage(size);
     
     int chars_percent = 100 - (chars_used * 100 ) / chars_max;
     if ( chars_max > 0 && chars_percent >= 0) {
