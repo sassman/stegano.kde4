@@ -33,6 +33,7 @@ private slots:
     void noValidMessage();
     void showSize();
     void showCharacters();
+    void toggleEncryption(bool enabled);
 
 private:
     Ui::Stegano* steganoUI;

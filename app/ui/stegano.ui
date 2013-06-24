@@ -143,9 +143,6 @@
       </layout>
      </widget>
      <widget class="QWidget" name="messageTab">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
       <attribute name="title">
        <string>Message</string>
       </attribute>
@@ -158,9 +155,6 @@
        </property>
        <item>
         <widget class="QFrame" name="encryptionWidget">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
          </property>

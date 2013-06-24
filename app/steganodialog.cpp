@@ -59,18 +59,8 @@ SteganoDialog::SteganoDialog( QWidget *parent ) :
     
     // encryption on / off
     this->steganoUI->encryptionWidget->setVisible(false);
-
-    connect( &stegano, SIGNAL( useCryptChanged(bool) ), 
-        this->steganoUI->encryptionToggle, SLOT( setChecked(bool) ) 
-    );
-    connect( &stegano, SIGNAL( useCryptChanged(bool) ), 
-        this->steganoUI->encryptionWidget, SLOT( setVisible(bool)) 
-    );
-    connect( &stegano, SIGNAL( useCryptChanged(bool) ), 
-        this->steganoUI->passwordText, SLOT( setFocus() ) 
-    );
     connect( this->steganoUI->encryptionToggle, SIGNAL( toggled(bool) ), 
-        &stegano, SLOT( setUseCrypt(bool) ) 
+        this, SLOT( toggleEncryption(bool) ) 
     );
     // TODO toggle the icon to document-encrypt
 
@@ -315,6 +305,14 @@ void SteganoDialog::showCharacters() {
         }
     }
 }
+
+void SteganoDialog::toggleEncryption(bool enabled) {
+    this->stegano.setUseCrypt(enabled);
+    this->steganoUI->encryptionWidget->setVisible(enabled); 
+    this->steganoUI->passwordText->setFocus();
+    this->steganoUI->encryptionToggle->setIcon(KIcon(enabled ? "document-encrypt" : "document-decrypt"));
+}
+
 
 #include "../build/src/steganodialog.moc"
 
