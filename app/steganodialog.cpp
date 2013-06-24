@@ -51,10 +51,7 @@ SteganoDialog::SteganoDialog( QWidget *parent ) :
         this->steganoUI->preview, SLOT( showPreview(KUrl) ) 
     );
     connect( &stegano, SIGNAL( sourceMediaChanged(KUrl) ), 
-        this, SLOT( showSize() ) 
-    );
-    connect( &stegano, SIGNAL( sourceMediaChanged(KUrl) ), 
-        this, SLOT( showCharacters() ) 
+        this, SLOT( onChanged() ) 
     );
     
     // encryption on / off
@@ -71,7 +68,7 @@ SteganoDialog::SteganoDialog( QWidget *parent ) :
         this, SLOT( setToHideFlag() ) 
     );
     connect( this->steganoUI->messageText, SIGNAL( textChanged() ), 
-        this, SLOT( showCharacters() ) 
+        this, SLOT( onChanged() ) 
     );
     
     connect( this->steganoUI->openMediaButton, SIGNAL( clicked() ),
@@ -281,7 +278,7 @@ void SteganoDialog::noValidMessage() {
     );
 }
 
-void SteganoDialog::showCharacters() {
+void SteganoDialog::onChanged() {
     QLocale::setDefault(QLocale(QLocale::English, QLocale::UnitedStates));
     long chars_max = this->stegano.getMaximumMessageSize() / 2;
     long chars_used = chars_max - this->steganoUI->messageText->toPlainText().length();

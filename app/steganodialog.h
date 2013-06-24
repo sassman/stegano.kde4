@@ -31,7 +31,7 @@ private slots:
     void noValidTargetMedia();
     void noValidPermissionsOnMedia();
     void noValidMessage();
-    void showCharacters();
+    void onChanged();
     void toggleEncryption(bool enabled);
 
 private:
