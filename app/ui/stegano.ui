@@ -104,7 +104,7 @@
            <item row="1" column="1">
             <widget class="QCommandLinkButton" name="openMediaButton">
              <property name="text">
-              <string>Open Media Steganography Media File</string>
+              <string>Open Steganography Media File</string>
              </property>
              <property name="icon">
               <iconset theme="document-open">
