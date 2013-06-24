@@ -246,7 +246,8 @@ void SteganoDialog::sourceMediaChange(){
         stegano.setSourceMedia(filename);
         this->setToHideFlag();
         generalGroup.writePathEntry(cfgKey, info.dir().absolutePath() );
-        this->steganoUI->mediaWidget->setCurrentIndex(1);
+        this->steganoUI->messageText->clear();
+        this->steganoUI->mediaWidget->setCurrentWidget(this->steganoUI->messageTab);
         this->steganoUI->messageTab->setEnabled(true);
     }
 }
