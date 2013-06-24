@@ -17,204 +17,286 @@
    <iconset>
     <normaloff>:/icon/ico/Mail.png</normaloff>:/icon/ico/Mail.png</iconset>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_7">
-   <item>
-    <layout class="QVBoxLayout" name="verticalLayout_6">
-     <item>
-      <widget class="QGroupBox" name="groupEncryption">
-       <property name="enabled">
-        <bool>true</bool>
+  <layout class="QGridLayout" name="gridLayout">
+   <property name="leftMargin">
+    <number>1</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>1</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <property name="spacing">
+    <number>1</number>
+   </property>
+   <item row="1" column="0">
+    <widget class="QTabWidget" name="mainWidget">
+     <property name="tabPosition">
+      <enum>QTabWidget::West</enum>
+     </property>
+     <property name="tabShape">
+      <enum>QTabWidget::Rounded</enum>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="mediaTab">
+      <attribute name="title">
+       <string>Media</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <property name="spacing">
+        <number>1</number>
        </property>
-       <property name="title">
-        <string>Encryption</string>
+       <property name="margin">
+        <number>0</number>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <item>
-         <layout class="QGridLayout" name="gridLayout">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Password</string>
+       <item>
+        <widget class="QStackedWidget" name="mediaWidget">
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <widget class="QWidget" name="openMediaPage">
+          <layout class="QGridLayout" name="gridLayout_2">
+           <item row="1" column="0">
+            <spacer name="hs1">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>150</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="0" column="1">
+            <spacer name="vs1">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="1" column="2">
+            <spacer name="hs2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="1" column="1">
+            <widget class="QCommandLinkButton" name="openMediaButton">
+             <property name="text">
+              <string>Open Media Steganography Media File</string>
+             </property>
+             <property name="icon">
+              <iconset theme="document-open">
+               <normaloff/>
+              </iconset>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <spacer name="vs2">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="previewMediaPage">
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <property name="margin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="KImageFilePreview" name="preview"/>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="messageTab">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <attribute name="title">
+       <string>Message</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_7">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <property name="margin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QFrame" name="encryptionWidget">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <property name="spacing">
+           <number>1</number>
+          </property>
+          <property name="margin">
+           <number>1</number>
+          </property>
+          <item>
+           <layout class="QGridLayout" name="gl1">
+            <property name="leftMargin">
+             <number>2</number>
             </property>
-            <property name="buddy">
-             <cstring>tPassword</cstring>
+            <property name="rightMargin">
+             <number>0</number>
             </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="KRestrictedLine" name="tPassword">
-            <property name="showClearButton" stdset="0">
-             <bool>true</bool>
+            <property name="horizontalSpacing">
+             <number>8</number>
             </property>
-            <property name="passwordMode" stdset="0">
-             <bool>true</bool>
+            <property name="verticalSpacing">
+             <number>1</number>
             </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>Hash</string>
-            </property>
-            <property name="buddy">
-             <cstring>tHash</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="tHash">
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QCheckBox" name="cUseEncryption">
-            <property name="text">
-             <string>enable encryption</string>
-            </property>
-           </widget>
+            <item row="0" column="0">
+             <widget class="QLabel" name="passwordLabel">
+              <property name="text">
+               <string>Password</string>
+              </property>
+              <property name="buddy">
+               <cstring>passwordText</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="KRestrictedLine" name="passwordText">
+              <property name="showClearButton" stdset="0">
+               <bool>true</bool>
+              </property>
+              <property name="passwordMode">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
-        </item>
-       </layout>
-      </widget>
-     </item>
-     <item>
-      <widget class="QGroupBox" name="groupBox_2">
-       <property name="title">
-        <string>Hide Secrets</string>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_5">
-        <item>
+        </widget>
+       </item>
+       <item>
+        <widget class="KTextEdit" name="messageText"/>
+       </item>
+       <item>
+        <widget class="QWidget" name="widget" native="true">
          <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <property name="spacing">
+           <number>1</number>
+          </property>
+          <property name="margin">
+           <number>1</number>
+          </property>
           <item>
-           <widget class="QFrame" name="frame_3">
-            <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
+           <widget class="KPushButton" name="buttonAttach">
+            <property name="enabled">
+             <bool>false</bool>
             </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
+            <property name="text">
+             <string>Add Attachment</string>
             </property>
-            <layout class="QVBoxLayout" name="verticalLayout_3">
-             <item>
-              <layout class="QVBoxLayout" name="verticalLayout_2">
-               <item>
-                <widget class="QLabel" name="label_3">
-                 <property name="text">
-                  <string>Media Preview</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="KImageFilePreview" name="preview" native="true"/>
-               </item>
-              </layout>
-             </item>
-            </layout>
+            <property name="icon">
+             <iconset theme="archive-insert">
+              <normaloff/>
+             </iconset>
+            </property>
            </widget>
           </item>
           <item>
-           <widget class="QFrame" name="frame_2">
-            <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
             </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
             </property>
-            <layout class="QVBoxLayout" name="verticalLayout_8">
-             <item>
-              <widget class="QProgressBar" name="kcapacitybar">
-               <property name="value">
-                <number>100</number>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <layout class="QVBoxLayout" name="verticalLayout_4">
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_4">
-                 <item>
-                  <widget class="QLabel" name="label_4">
-                   <property name="text">
-                    <string>Message</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLabel" name="lCharsAvailable">
-                   <property name="font">
-                    <font>
-                     <pointsize>6</pointsize>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>0 charachters left</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <widget class="KTabWidget" name="ktabwidget">
-                 <property name="enabled">
-                  <bool>true</bool>
-                 </property>
-                 <property name="tabPosition">
-                  <enum>QTabWidget::West</enum>
-                 </property>
-                 <property name="currentIndex">
-                  <number>0</number>
-                 </property>
-                 <widget class="QWidget" name="tabText">
-                  <attribute name="title">
-                   <string>Text</string>
-                  </attribute>
-                  <layout class="QVBoxLayout" name="verticalLayout_9">
-                   <item>
-                    <widget class="KTextEdit" name="tMessageText"/>
-                   </item>
-                   <item>
-                    <widget class="KPushButton" name="buttonAttach">
-                     <property name="enabled">
-                      <bool>false</bool>
-                     </property>
-                     <property name="text">
-                      <string>Add Attachment</string>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </widget>
-                 <widget class="QWidget" name="tabAttachment">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                  <attribute name="title">
-                   <string>Documents</string>
-                  </attribute>
-                  <layout class="QVBoxLayout" name="verticalLayout_10">
-                   <item>
-                    <widget class="KListWidget" name="listFiles"/>
-                   </item>
-                  </layout>
-                 </widget>
-                </widget>
-               </item>
-              </layout>
-             </item>
-            </layout>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QToolButton" name="encryptionToggle">
+            <property name="text">
+             <string>...</string>
+            </property>
+            <property name="icon">
+             <iconset theme="document-decrypt">
+              <normaloff/>
+             </iconset>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QProgressBar" name="kcapacitybar">
+            <property name="value">
+             <number>0</number>
+            </property>
            </widget>
           </item>
          </layout>
-        </item>
-       </layout>
-      </widget>
-     </item>
-    </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="attachmentTab">
+      <attribute name="title">
+       <string>Attachments</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_11">
+       <property name="spacing">
+        <number>1</number>
+       </property>
+       <property name="margin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="KListWidget" name="listFiles"/>
+       </item>
+      </layout>
+     </widget>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -245,24 +327,11 @@
    <header>klistwidget.h</header>
   </customwidget>
   <customwidget>
-   <class>KTabWidget</class>
-   <extends>QTabWidget</extends>
-   <header>ktabwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>KImageFilePreview</class>
    <extends>QWidget</extends>
    <header>kimagefilepreview.h</header>
   </customwidget>
  </customwidgets>
- <tabstops>
-  <tabstop>tPassword</tabstop>
-  <tabstop>cUseEncryption</tabstop>
-  <tabstop>tMessageText</tabstop>
-  <tabstop>ktabwidget</tabstop>
-  <tabstop>tHash</tabstop>
- </tabstops>
  <resources/>
  <connections/>
  <slots>

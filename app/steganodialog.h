@@ -2,6 +2,7 @@
 #define STEGANODIALOG_H
 
 #include <KXmlGuiWindow>
+#include <KAction>
 
 // include the automatically generated header file for the ui-file
 #include "steganocore.h"
@@ -39,6 +40,8 @@ private:
     bool        isHidden;
     QString     fileFilterSource;
     QString     fileFilterTarget;
+    
+    KAction*    openMediaAction;
     
     void setupActions();
 };

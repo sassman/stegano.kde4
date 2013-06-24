@@ -55,27 +55,37 @@ SteganoDialog::SteganoDialog( QWidget *parent ) :
     connect( &stegano, SIGNAL( sourceMediaChanged(KUrl) ), 
         this, SLOT( showCharacters() ) 
     );
-    connect( &stegano, SIGNAL( keyChanged(QString) ), 
-        this->steganoUI->tHash, SLOT( setText(QString) ) 
+    
+    // encryption on / off
+    this->steganoUI->encryptionWidget->setVisible(false);
+
+    connect( &stegano, SIGNAL( useCryptChanged(bool) ), 
+        this->steganoUI->encryptionToggle, SLOT( setChecked(bool) ) 
     );
     connect( &stegano, SIGNAL( useCryptChanged(bool) ), 
-        this->steganoUI->cUseEncryption, SLOT( setChecked(bool) ) 
+        this->steganoUI->encryptionWidget, SLOT( setVisible(bool)) 
     );
-
-
-    connect( this->steganoUI->tPassword, SIGNAL( userTextChanged(const QString&) ), 
-        &stegano, SLOT( setPassword(const QString&) ) 
+    connect( &stegano, SIGNAL( useCryptChanged(bool) ), 
+        this->steganoUI->passwordText, SLOT( setFocus() ) 
     );
-    connect( this->steganoUI->cUseEncryption, SIGNAL( toggled(bool) ), 
+    connect( this->steganoUI->encryptionToggle, SIGNAL( toggled(bool) ), 
         &stegano, SLOT( setUseCrypt(bool) ) 
     );
-    connect( this->steganoUI->tMessageText, SIGNAL( textChanged() ), 
+    // TODO toggle the icon to document-encrypt
+
+    connect( this->steganoUI->passwordText, SIGNAL( userTextChanged(const QString&) ), 
+        &stegano, SLOT( setPassword(const QString&) ) 
+    );
+    connect( this->steganoUI->messageText, SIGNAL( textChanged() ), 
         this, SLOT( setToHideFlag() ) 
     );
-    connect( this->steganoUI->tMessageText, SIGNAL( textChanged() ), 
+    connect( this->steganoUI->messageText, SIGNAL( textChanged() ), 
         this, SLOT( showCharacters() ) 
     );
     
+    connect( this->steganoUI->openMediaButton, SIGNAL( clicked() ),
+        this, SLOT( sourceMediaChange() )
+    );
 }
 
 void SteganoDialog::setupActions() {
@@ -88,6 +98,7 @@ void SteganoDialog::setupActions() {
     connect(action1, SIGNAL(triggered(bool)),
         this, SLOT( sourceMediaChange() )
     );
+    this->openMediaAction = action1;
 
     action1 = new KAction(this);
     action1->setText(i18n("&Save as"));
@@ -122,14 +133,14 @@ bool SteganoDialog::hideData() {
         return false;
     }
 
-    if(this->steganoUI->tMessageText->toPlainText().isEmpty()) {
+    if(this->steganoUI->messageText->toPlainText().isEmpty()) {
         this->noValidMessage();
         return false;
     }
 
     QProgressDialog progress(i18n("Hide Data..."), i18n("Cancel"), 0, 100, this);
     progress.setWindowModality(Qt::WindowModal);
-    stegano.hideData(this->steganoUI->tMessageText->toPlainText(), &progress);
+    stegano.hideData(this->steganoUI->messageText->toPlainText(), &progress);
     progress.close();
     return this->isHidden = true;
 }
@@ -144,7 +155,7 @@ bool SteganoDialog::unhideData() {
     QProgressDialog progress(i18n("Unhide Data..."), i18n("Cancel"), 0, 100, this);
     progress.setWindowModality(Qt::WindowModal);
     QString message = stegano.unhideData(&progress);
-    this->steganoUI->tMessageText->setPlainText(message);
+    this->steganoUI->messageText->setPlainText(message);
     progress.close();
     return true;
 }
@@ -242,7 +253,7 @@ void SteganoDialog::sourceMediaChange(){
         stegano.setSourceMedia(filename);
         this->setToHideFlag();
         generalGroup.writePathEntry(cfgKey, info.dir().absolutePath() );
-        //((QStackedWidget*) this->wrapperWidget)->setCurrentIndex(1);
+        this->steganoUI->mediaWidget->setCurrentIndex(1);
     }
 }
 void SteganoDialog::noValidSourceMedia() {
@@ -267,7 +278,7 @@ void SteganoDialog::noValidPermissionsOnMedia() {
     );
 }
 void SteganoDialog::noValidMessage() {
-    this->steganoUI->tMessageText->setFocus();
+    this->steganoUI->messageText->setFocus();
     KMessageBox::information(
         this, 
         i18n("Please type a message or add a file that can be hidden in the source media"),
@@ -283,9 +294,9 @@ void SteganoDialog::showSize() {
 void SteganoDialog::showCharacters() {
     QLocale::setDefault(QLocale(QLocale::English, QLocale::UnitedStates));
     long chars_max = this->stegano.getMaximumMessageSize() / 2;
-    long chars_used = chars_max - this->steganoUI->tMessageText->toPlainText().length();
+    long chars_used = chars_max - this->steganoUI->messageText->toPlainText().length();
     QString size = QString("%L1 characters left").arg(chars_used);
-    this->steganoUI->lCharsAvailable->setText( size );
+    // this->steganoUI->lCharsAvailable->setText( size );
     
     int chars_percent = 0;
     if ( chars_max > 0 && (chars_percent = (chars_used * 100 ) / chars_max) > 0) {
