@@ -254,6 +254,7 @@ void SteganoDialog::sourceMediaChange(){
         this->setToHideFlag();
         generalGroup.writePathEntry(cfgKey, info.dir().absolutePath() );
         this->steganoUI->mediaWidget->setCurrentIndex(1);
+        this->steganoUI->messageTab->setEnabled(true);
     }
 }
 void SteganoDialog::noValidSourceMedia() {
@@ -298,13 +299,15 @@ void SteganoDialog::showCharacters() {
     QString size = QString("%L1 characters left").arg(chars_used);
     // this->steganoUI->lCharsAvailable->setText( size );
     
-    int chars_percent = 0;
-    if ( chars_max > 0 && (chars_percent = (chars_used * 100 ) / chars_max) > 0) {
-        this->steganoUI->kcapacitybar->setValue( chars_percent );
-        if( chars_percent < 20 ) {
-            this->steganoUI->kcapacitybar->setStyleSheet("background-color: #f97b6e;");
+    int chars_percent = 100 - (chars_used * 100 ) / chars_max;
+    if ( chars_max > 0 && chars_percent >= 0) {
+        this->steganoUI->capacityBar->setValue( chars_percent );
+        if( chars_percent > 80 ) {
+            QPalette p = this->steganoUI->capacityBar->palette();
+            p.setColor(QPalette::Highlight, QColor(Qt::red));
+            this->steganoUI->capacityBar->setPalette(p);
         } else {
-            this->steganoUI->kcapacitybar->setStyleSheet("");
+            this->steganoUI->capacityBar->setPalette(QPalette());
         }
     }
 }

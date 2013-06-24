@@ -144,7 +144,7 @@
      </widget>
      <widget class="QWidget" name="messageTab">
       <property name="enabled">
-       <bool>true</bool>
+       <bool>false</bool>
       </property>
       <attribute name="title">
        <string>Message</string>
@@ -159,7 +159,7 @@
        <item>
         <widget class="QFrame" name="encryptionWidget">
          <property name="enabled">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
@@ -269,7 +269,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QProgressBar" name="kcapacitybar">
+           <widget class="QProgressBar" name="capacityBar">
             <property name="value">
              <number>0</number>
             </property>
@@ -281,6 +281,9 @@
       </layout>
      </widget>
      <widget class="QWidget" name="attachmentTab">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <attribute name="title">
        <string>Attachments</string>
       </attribute>
