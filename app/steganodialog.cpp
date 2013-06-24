@@ -158,6 +158,8 @@ bool SteganoDialog::unhideData() {
     QString message = stegano.unhideData(&progress);
     this->steganoUI->messageText->setPlainText(message);
     progress.close();
+    this->steganoUI->mainWidget->setCurrentWidget(this->steganoUI->messageTab);
+    this->steganoUI->messageText->setFocus();
     return true;
 }
 
