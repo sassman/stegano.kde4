@@ -31,7 +31,6 @@ private slots:
     void noValidTargetMedia();
     void noValidPermissionsOnMedia();
     void noValidMessage();
-    void showSize();
     void showCharacters();
     void toggleEncryption(bool enabled);
 

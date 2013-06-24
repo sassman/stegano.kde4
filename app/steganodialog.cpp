@@ -280,11 +280,6 @@ void SteganoDialog::noValidMessage() {
     );
 }
 
-void SteganoDialog::showSize() {
-    QLocale::setDefault(QLocale(QLocale::English, QLocale::UnitedStates));
-    QString size = QString("%L1 Byte").arg(this->stegano.getMaximumMessageSize());
-    //this->steganoUI->lCharsAvailable->setText( size );
-}
 void SteganoDialog::showCharacters() {
     QLocale::setDefault(QLocale(QLocale::English, QLocale::UnitedStates));
     long chars_max = this->stegano.getMaximumMessageSize() / 2;
