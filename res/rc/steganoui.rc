@@ -11,6 +11,7 @@
             <Action name="open" />
             <Separator />
             <Action name="unhide" />
+            <Action name="protect" />
             <Separator />
             <Action name="save as" />
         </Menu>
@@ -21,6 +22,7 @@
         <Action name="open" />
         <Separator />
         <Action name="unhide" />
+        <Action name="protect" />
         <Separator />
         <Action name="save as" />
     </ToolBar>
