@@ -16,6 +16,9 @@ class SteganoDialog : public KXmlGuiWindow { Q_OBJECT
 public:
     SteganoDialog( QWidget *parent=0 );
     virtual ~SteganoDialog() {}
+    
+signals:
+    void modificationChanged(bool);
 
 public slots:
     void slideDown(QWidget* );
@@ -41,7 +44,10 @@ private:
     QString     fileFilterSource;
     QString     fileFilterTarget;
     
-    KAction*    openMediaAction;
+    KAction*    actionOpenMedia;
+    KAction*    actionProtect;
+    KAction*    actionUnhide;
+    KAction*    actionSaveAs;
     
     void setupActions();
 };

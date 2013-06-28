@@ -74,6 +74,10 @@ SteganoDialog::SteganoDialog( QWidget *parent ) :
     connect( this->steganoUI->openMediaButton, SIGNAL( clicked() ),
         this, SLOT( sourceMediaChange() )
     );
+    
+    connect(this, SIGNAL(modificationChanged(bool)),
+        this->steganoUI->messageText->document(), SLOT(setModified(bool))
+    );
 }
 
 void SteganoDialog::setupActions() {
@@ -86,7 +90,7 @@ void SteganoDialog::setupActions() {
     connect(action1, SIGNAL(triggered(bool)),
         this, SLOT( sourceMediaChange() )
     );
-    this->openMediaAction = action1;
+    this->actionOpenMedia = action1;
 
     action1 = new KAction(this);
     action1->setText(i18n("&Save as"));
@@ -96,15 +100,32 @@ void SteganoDialog::setupActions() {
     connect(action1, SIGNAL(triggered(bool)),
         this, SLOT( saveMedia() )
     );
+    connect(this, SIGNAL(modificationChanged(bool)),
+        action1, SLOT(setEnabled(bool)) 
+    );
+    action1->setEnabled(false);
+    this->actionSaveAs = action1;    
+
+    action1 = new KAction(KIcon("document-decrypt"), i18n("&Protect"), this);
+    action1->setToolTip(i18n("Turn password protection on or off"));
+    this->actionCollection()->addAction("protect", action1);
+    connect(action1, SIGNAL(triggered(bool)),
+        this->steganoUI->encryptionToggle, SLOT(setChecked(bool))
+    );
+    action1->setCheckable(true);
+    action1->setEnabled(false);
+    this->actionProtect = action1;    
 
     action1 = new KAction(this);
-    action1->setText(i18n("&Unhide"));
+    action1->setText(i18n("&Decrypt"));
     action1->setIcon(KIcon("document-preview-archive"));
     //action1->setShortcut(Qt::CTRL + Qt::Key_S);
     this->actionCollection()->addAction("unhide", action1);
     connect(action1, SIGNAL(triggered(bool)),
         this, SLOT( unhideData() )
     );
+    action1->setEnabled(false);
+    this->actionUnhide = action1;
 
     KStandardAction::quit(
         this , SLOT( close() ),
@@ -171,11 +192,12 @@ void SteganoDialog::saveMedia() {
     QDir      dir = info.dir().absolutePath();
     if( !info.exists() || info.isWritable() ) {
         stegano.sourceMedia()->save(filename);
+        emit(modificationChanged(false));
         KMessageBox::information(
             this, 
             i18n("The Stegano Media was saved to file"),
             i18n("Media Saved") 
-        );
+        );        
     }else {
         this->noValidPermissionsOnMedia();
     }
@@ -246,6 +268,7 @@ void SteganoDialog::sourceMediaChange(){
         this->steganoUI->messageText->clear();
         this->steganoUI->mediaWidget->setCurrentWidget(this->steganoUI->previewMediaPage);
         this->steganoUI->messageTab->setEnabled(true);
+        this->actionUnhide->setEnabled(true);
     }
 }
 void SteganoDialog::noValidSourceMedia() {
@@ -297,6 +320,13 @@ void SteganoDialog::onChanged() {
             this->steganoUI->capacityBar->setPalette(QPalette());
         }
     }
+    
+    this->actionProtect->setEnabled(true);
+    this->actionSaveAs->setEnabled(true);
+    QTextDocument* document = this->steganoUI->messageText->document();
+    if(document) {
+        emit(modificationChanged(document->isModified()));
+    }
 }
 
 void SteganoDialog::toggleEncryption(bool enabled) {
@@ -304,6 +334,9 @@ void SteganoDialog::toggleEncryption(bool enabled) {
     this->steganoUI->encryptionWidget->setVisible(enabled); 
     this->steganoUI->passwordText->setFocus();
     this->steganoUI->encryptionToggle->setIcon(KIcon(enabled ? "document-encrypt" : "document-decrypt"));
+    this->actionProtect->setIcon(this->steganoUI->encryptionToggle->icon());
+    this->actionProtect->setText(i18n(enabled ? "Unprotect" : "Protect"));
+    emit(modificationChanged(true));
 }
 
 
