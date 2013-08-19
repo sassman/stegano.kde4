@@ -139,17 +139,14 @@ void SteganoDialog::setupActions() {
 }
 
 void SteganoDialog::dropEvent ( QDropEvent* event) {
-    kDebug()<<"foo bar";
     if(!this->isValidMimeData(event->mimeData())) {
         return;
     }
     
     QList<QUrl> urls = event->mimeData()->urls();
     QUrl url = urls.last();
-    
-    kDebug()<<url.path();
+
     sourceMediaChange(url.path());
-    
     event->acceptProposedAction();
 }
 
