@@ -1,3 +1,4 @@
+#include <KDebug>
 #include <KLocale>
 #include <KMessageBox>
 #include <KIcon>
@@ -10,6 +11,8 @@
 #include <QProgressDialog>
 #include <QPropertyAnimation>
 #include <QFileDialog>
+#include <QMimeData>
+#include <QDropEvent>
 
 #include <KDE/Plasma/WindowEffects>
 #include <KWindowSystem>
@@ -132,6 +135,47 @@ void SteganoDialog::setupActions() {
         actionCollection()
     );
     this->setupGUI();
+    this->setAcceptDrops(true);
+}
+
+void SteganoDialog::dropEvent ( QDropEvent* event) {
+    kDebug()<<"foo bar";
+    if(!this->isValidMimeData(event->mimeData())) {
+        return;
+    }
+    
+    QList<QUrl> urls = event->mimeData()->urls();
+    QUrl url = urls.last();
+    
+    kDebug()<<url.path();
+    sourceMediaChange(url.path());
+    
+    event->acceptProposedAction();
+}
+
+void SteganoDialog::dragEnterEvent ( QDragEnterEvent* event) {
+    if(!this->isValidMimeData(event->mimeData())) {
+        return;
+    }
+    event->acceptProposedAction();
+}
+
+void SteganoDialog::dragLeaveEvent ( QDragLeaveEvent* event) {
+    event->accept();
+}
+
+void SteganoDialog::dragMoveEvent ( QDragMoveEvent* event) {
+    if(!this->isValidMimeData(event->mimeData())) {
+        return;
+    }
+    event->acceptProposedAction();
+}
+
+bool SteganoDialog::isValidMimeData ( const QMimeData* mime ) {
+    if(!mime->hasUrls()) {
+        return false;
+    }
+    return true;
 }
 
 
@@ -262,15 +306,21 @@ void SteganoDialog::sourceMediaChange(){
     );
     QFileInfo info(filename);
     if( info.isReadable() ) {
-        stegano.setSourceMedia(filename);
-        this->setToHideFlag();
-        generalGroup.writePathEntry(cfgKey, info.dir().absolutePath() );
-        this->steganoUI->messageText->clear();
-        this->steganoUI->mediaWidget->setCurrentWidget(this->steganoUI->previewMediaPage);
-        this->steganoUI->messageTab->setEnabled(true);
-        this->actionUnhide->setEnabled(true);
+        sourceMediaChange(info.dir().absolutePath());
+        generalGroup.writePathEntry(cfgKey, info.dir().absolutePath());        
     }
 }
+
+void SteganoDialog::sourceMediaChange ( QString absolutePath ) {
+    stegano.setSourceMedia(absolutePath);
+    this->setToHideFlag();
+    this->steganoUI->messageText->clear();
+    this->steganoUI->mediaWidget->setCurrentWidget(this->steganoUI->previewMediaPage);
+    this->steganoUI->messageTab->setEnabled(true);
+    this->actionUnhide->setEnabled(true);
+}
+
+
 void SteganoDialog::noValidSourceMedia() {
     KMessageBox::information(
         this, 
@@ -309,8 +359,8 @@ void SteganoDialog::onChanged() {
     this->statusBar()->clearMessage();
     this->statusBar()->showMessage(size);
     
-    int chars_percent = 100 - (chars_used * 100 ) / chars_max;
-    if ( chars_max > 0 && chars_percent >= 0) {
+    if ( chars_max > 0 ) {
+        int chars_percent = 100 - (chars_used * 100 ) / chars_max;
         this->steganoUI->capacityBar->setValue( chars_percent );
         if( chars_percent > 80 ) {
             QPalette p = this->steganoUI->capacityBar->palette();

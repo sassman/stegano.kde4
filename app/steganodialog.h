@@ -9,9 +9,11 @@
 #include "ui_stegano.h"
 //#include "ui_stegano_clean.h"
 
+class QFileInfo;
 namespace Stegano {
 
-class SteganoDialog : public KXmlGuiWindow { Q_OBJECT
+class SteganoDialog : public KXmlGuiWindow { 
+    Q_OBJECT
 
 public:
     SteganoDialog( QWidget *parent=0 );
@@ -30,6 +32,7 @@ private slots:
     void saveMedia();
     void setToHideFlag();
     void sourceMediaChange();
+    void sourceMediaChange(QString info);
     void noValidSourceMedia();
     void noValidTargetMedia();
     void noValidPermissionsOnMedia();
@@ -49,7 +52,12 @@ private:
     KAction*    actionUnhide;
     KAction*    actionSaveAs;
     
-    void setupActions();
+    void        setupActions();
+    virtual void dropEvent ( QDropEvent* );
+    virtual void dragEnterEvent ( QDragEnterEvent* );
+    virtual void dragMoveEvent ( QDragMoveEvent* );
+    virtual void dragLeaveEvent ( QDragLeaveEvent* );
+    bool        isValidMimeData( const QMimeData* mime );
 };
 
 }
